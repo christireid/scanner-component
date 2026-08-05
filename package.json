@@ -1,0 +1,36 @@
+{
+  "name": "grid-pulse-scan-pro",
+  "private": true,
+  "version": "3.0.0-rc.1",
+  "type": "module",
+  "description": "Grid Pulse Scan Pro — canonical consolidated source tree.",
+  "main": "src/GridPulseScanPro.tsx",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --force",
+    "test": "node --test --experimental-strip-types \"test/*.test.ts\"",
+    "lint:css": "node tools/lint-css-templates.mjs",
+    "inventory": "node tools/feature-inventory.mjs",
+    "quality": "node tools/quality-floor.mjs",
+    "harness": "node tools/build-harness.mjs",
+    "serve": "node tools/serve.mjs",
+    "verify": "npm run typecheck && npm run test && npm run lint:css && npm run inventory && npm run quality"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react": "6.0.5",
+    "typescript": "5.9.3",
+    "vite": "8.2.0"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}
