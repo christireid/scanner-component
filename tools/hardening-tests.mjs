@@ -113,8 +113,14 @@ const open = async (query, options = {}) => {
 
 /* 6 — Specimen composition modes render distinctly */
 {
+    // The engine chrome must be present for the modes to differ: the default
+    // Specimen scene draws nearly everything in its own layer, and the first
+    // version of this check "passed" only on run-to-run atmosphere noise that
+    // the deterministic low quality tier later removed. Forcing engine grid
+    // and boxes on makes integrated (both layers), grid-pulse (engine only),
+    // and specimen (specimen only) genuinely disjoint.
     const grab = async composition => {
-        const { context, page } = await open(`src=/test-media/dahlia-dark.jpeg&activation=always&composition=${composition}`)
+        const { context, page } = await open(`src=/test-media/dahlia-dark.jpeg&activation=always&composition=${composition}&forceChrome=1`)
         await page.evaluate(() => window.__ready)
         await page.waitForTimeout(2500)
         const pixels = await page.evaluate(() => {

@@ -7,14 +7,14 @@
     },
     "measured": {
       "pointsMeasured": 5,
-      "totalRevealMs": 699.9,
-      "perPointRevealTo99Ms": 333.3,
-      "meanStaggerMs": 95.8,
+      "totalRevealMs": 683.3,
+      "perPointRevealTo99Ms": 316.7,
+      "meanStaggerMs": 87.5,
       "staggersMs": [
-        99.9,
-        100.1,
+        83.4,
         83.3,
-        100
+        100,
+        83.3
       ]
     }
   },
@@ -27,10 +27,10 @@
     "measured": {
       "wraps": 3,
       "periodsMs": [
-        1466,
-        1433
+        1469,
+        1448
       ],
-      "meanPeriodMs": 1450
+      "meanPeriodMs": 1458
     }
   },
   "crosshair": {
@@ -39,8 +39,8 @@
       "note": "time to cover 99% of the gap"
     },
     "measured": {
-      "latencyMs": 92.7,
-      "remainingShare": 0.007847599703514563
+      "latencyMs": 93.7,
+      "remainingShare": 0.003509644741569451
     }
   },
   "hoverOut": {
@@ -49,8 +49,8 @@
       "exitDurationMs": 220
     },
     "measured": {
-      "deactivateMs": 102.6,
-      "overlayClearMs": 352.9
+      "deactivateMs": 107.6,
+      "overlayClearMs": 341.1
     }
   },
   "chipContrast": {

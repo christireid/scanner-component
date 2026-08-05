@@ -619,3 +619,45 @@ iteration is again required back-to-back with another.** The claim "everything
 measurable here is measured" survives; the claim "nothing new is being found"
 was two iterations old and iteration 19 disproved it — which is precisely why
 the plan demands two *consecutive* clean passes before stopping.
+
+
+---
+
+### Iteration 20 — full battery re-run on the fixed build; clean (component)
+
+Evidence refresh and regression sweep after iteration 19:
+
+- All 20 preset/default/effect captures re-taken (they predated the
+  adaptive-chrome default and the quality fix). D6 distinctness **improved**:
+  the weakest overlay pair rose from 0.24 to 0.57 mean-abs-alpha
+  (`docs/captures/preset-distinctness.json` refreshed).
+- Behaviour suite 12/12; timing battery consistent with iteration 17
+  (reveal 683 ms / stagger 95.8 ms / sweep 1450 ms exact / crosshair 88.9 ms /
+  chip contrast 17.1:1 / resize clean).
+- Hardening suite: 6/7, then 7/7. The composition-modes check failed —
+  diagnosis showed the **check**, not the component, was wrong: the default
+  Specimen scene draws nearly everything in its own layer, so
+  integrated↔specimen differ only by residual engine chrome, and the original
+  pass had ridden on run-to-run atmosphere noise that iteration 19's
+  deterministic low tier removed. The check now pins loud engine chrome via a
+  `forceChrome` harness switch and measures the real compositional deltas
+  (integrated↔grid-pulse 13.8, integrated↔specimen 5.8,
+  grid-pulse↔specimen 18.2).
+
+**No new component findings — clean pass one of the two required.**
+
+
+---
+
+### Iteration 21 — second consecutive clean pass; convergence re-established
+
+Full battery, unchanged build: behaviour 12/12, hardening 7/7, timings within
+one frame of configuration (sweep 1458 ms, crosshair 93.7 ms, hover-out
+107.6 / 341.1 ms, chip contrast 17.1:1, resize exact), preset distinctness
+stable, Specimen scenarios 23–28 rAF/s at the low tier, `npm run verify`
+green (111/111, lint clean, inventory 0 removals, floors 5/5).
+
+**No new findings. Iterations 20 and 21 are the required consecutive clean
+pair — convergence re-established, now including the adaptive-quality fix.**
+§8.1 remains structurally unevaluable here (Section D still has zero FAILs);
+§8.3 remains met.

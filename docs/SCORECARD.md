@@ -86,8 +86,9 @@ reveal 333 ms, stagger 96 ms, sweep 1450 ms, crosshair 93 ms, hover-out
 
 1. ≥ 95/100 with zero D FAILs — **not evaluable**: 60 points structurally
    unverifiable here; Section D has zero FAILs.
-2. Two consecutive clean iterations — **reset by iteration 19** (the
-   Specimen adaptive-quality finding, fixed and remeasured at ~150× frame-time
-   improvement). See the parity log's amended convergence statement.
+2. Two consecutive clean iterations — **met by iterations 20 and 21**, after
+   iteration 19 (the Specimen adaptive-quality finding, fixed at ~150×
+   frame-time improvement) reset the previous pair. Full history in the
+   parity log.
 3. Every UNVERIFIABLE-HERE row listed with reason and unblock steps — **met**
    ([UNREACHABLE.md](./UNREACHABLE.md)).

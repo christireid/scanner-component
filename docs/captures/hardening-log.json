@@ -32,6 +32,6 @@
   {
     "name": "composition modes render distinctly",
     "pass": true,
-    "detail": "integrated↔grid-pulse=41.8 integrated↔specimen=7.3 grid-pulse↔specimen=43.4 mean-abs-gray"
+    "detail": "integrated↔grid-pulse=13.5 integrated↔specimen=5.4 grid-pulse↔specimen=18.2 mean-abs-gray"
   }
 ]

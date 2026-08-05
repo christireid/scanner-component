@@ -95,7 +95,7 @@ from this repository.**
 | Sections B and C (fidelity) | **19 rows, all UNVERIFIABLE-HERE** — the reference runtime and its demo media are blocked at the egress proxy, verified with a real Chromium (`net::ERR_TUNNEL_CONNECTION_FAILED`) |
 | Local browser evidence | **69 captures, 0 page errors**, in `docs/captures/` — presets, effects, Specimen scenes, and a 4-photo × 10-scenario real-media matrix ([MEDIA-TESTS.md](./docs/MEDIA-TESTS.md)) |
 | Official parity score | **not established, and not estimated** |
-| Convergence (§8.2) | **reset by iteration 19** — the Specimen adaptive-quality diagnosis (fixed, ~150× frame-time improvement); everything measurable here remains measured |
+| Convergence (§8.2) | **met — iterations 20 and 21** are consecutive zero-finding passes on the build that includes all nine defect fixes; everything measurable here is measured |
 
 The reference runtime was never observed: `framer.com` and `*.framer.website`
 are denied by this environment's egress policy, returning HTTP 403 at CONNECT.
@@ -123,10 +123,15 @@ source did not. Each is logged with its measurement in
    tones: a fixed tie-break jitter was 11.4% of that mode's compressed score
    range, against 2.5% for the others.
 5. The public target tracker did not clamp newly acquired points.
-6. **The shipped default was illegible on white media** — white chrome on a
+6. **Specimen adaptive quality could not rescue a collapse** — SwiftShader
+   passed the WebGL2 probe so software GL ran the GPU pass at 318 ms/frame,
+   and the degradation loop judged lifetime averages too slowly to ever fire.
+   Fixed with software-GL detection and windowed degradation: 2.1–2.7 ms
+   frames, ~150× improvement.
+7. **The shipped default was illegible on white media** — white chrome on a
    white photograph. Found by testing user-supplied photos; fixed by defaulting
    `adaptiveChrome` on (global mode), before/after captures committed.
-7. **The demand-driven render loop froze permanently with a blank overlay** —
+8. **The demand-driven render loop froze permanently with a blank overlay** —
    the rescan fade passes through alpha 0 and the loop's keep-alive condition
    was gated on `overlayAlpha > 0`. Invisible in code review and interactive
    use; found by instrumenting rAF counts in the local browser (6 frames, then

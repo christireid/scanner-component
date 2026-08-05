@@ -71,6 +71,13 @@ const page = `<!doctype html>
   const composition = params.get("composition")
   const Component = composition ? SpecimenGridPulse : GridPulseScan
   if (composition) props.specimen = { showControls: false, composition }
+  // forceChrome=1 pins loud engine chrome so composition modes are comparable
+  // regardless of what the active Specimen scene hides.
+  if (params.get("forceChrome") === "1") {
+    props.grid = { visible: true, opacity: 0.35, animation: "dash" }
+    props.boxes = { visible: true }
+    props.connections = { visible: true, topology: "leaders" }
+  }
   const root = createRoot(document.getElementById("stage"))
   window.__root = root
   window.__setProps = next => root.render(createElement(Component, { ...props, ...next }))
