@@ -141,10 +141,20 @@ The Specimen-style tracking-frame layout was also found shipping as dead code �
 90 lines, exported, never imported — and is now reachable via
 `boxes.layout: "tracking"`.
 
+## Using it in Framer
+
+`src/GridPulseScan.framer.tsx` (engine, mirrors the reference's control set)
+and `src/GridPulseScanPro.framer.tsx` (integrated Specimen renderer) are
+code-component wrappers with full property controls, typechecked against the
+published `framer` type definitions. Paste either into a Framer code file
+along with `src/` — the properties panel exposes media, scene/preset,
+detection, effects, aspect, mirror, activation, and chrome.
+
 ## Docs
 
 | File | Contents |
 | --- | --- |
+| [FINAL-REPORT.md](./docs/FINAL-REPORT.md) | The plan §8 closing deliverable — start here |
 | [COMPONENT.md](./docs/COMPONENT.md) | API reference |
 | [PARITY-PLAN.md](./docs/PARITY-PLAN.md) | The programme, with recorded ambiguities |
 | [SCORECARD.md](./docs/SCORECARD.md) | Every rubric row and its state |

@@ -107,11 +107,13 @@ for (const file of walk(join(root, "src"), [".ts", ".tsx"])) {
 
     for (const match of source.matchAll(FONT_KEY)) {
         const value = match[1]
-        if (!/^\s*(?:\d+(?:\.\d+)?)(?:px|rem|em)\s+\S/.test(value)) {
+        // Valid forms: an optional weight, a size with an optional
+        // /line-height (DOM styles use it; canvas ignores it), then a family.
+        if (!/^\s*(?:\d{3}\s+)?(?:\d+(?:\.\d+)?)(?:px|rem|em)(?:\/[\d.]+)?\s+\S/.test(value)) {
             fail(
                 file,
                 lineOf(source, match.index),
-                `canvas font shorthand must start with a size then a family: \`${value}\``
+                `font shorthand must be [weight] size[/line-height] family: \`${value}\``
             )
         }
     }

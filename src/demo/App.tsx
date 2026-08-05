@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react"
+import SpecimenGridPulsePlayground from "./SpecimenGridPulsePlayground"
+import CaptureApp from "./CaptureApp"
 import SpecimenGridPulse, {
     GRID_PULSE_SCAN_PRESETS,
     GridPulseScan,
@@ -12,7 +14,7 @@ import SpecimenGridPulse, {
 const effects: GridPulseEffect[] = ["none", "bitmap", "pixelated", "code", "xray", "thermal"]
 const modes: GridPulseDetectionMode[] = ["auto", "person", "detail"]
 
-type RendererChoice = "integrated" | "engine"
+type RendererChoice = "integrated" | "engine" | "playground" | "capture"
 
 /**
  * Demo for the combined component.
@@ -68,6 +70,8 @@ export default function App() {
                         >
                             <option value="integrated">integrated (Specimen)</option>
                             <option value="engine">engine (Grid Pulse)</option>
+                            <option value="playground">playground (v2.8)</option>
+                            <option value="capture">capture app (v2.8)</option>
                         </select>
                     </label>
 
@@ -142,7 +146,11 @@ export default function App() {
             </header>
 
             <section className="stage">
-                {renderer === "integrated" ? (
+                {renderer === "playground" ? (
+                    <SpecimenGridPulsePlayground src="/demo-flower.jpeg" style={{ width: "100%", height: "100%" }} />
+                ) : renderer === "capture" ? (
+                    <CaptureApp />
+                ) : renderer === "integrated" ? (
                     <SpecimenGridPulse
                         key={specimenPreset}
                         src="/demo-flower.jpeg"

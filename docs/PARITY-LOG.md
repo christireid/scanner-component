@@ -661,3 +661,24 @@ green (111/111, lint clean, inventory 0 removals, floors 5/5).
 pair — convergence re-established, now including the adaptive-quality fix.**
 §8.1 remains structurally unevaluable here (Section D still has zero FAILs);
 §8.3 remains met.
+
+
+---
+
+### Iteration 22 — remaining deliverables closed
+
+- **v2.8 playground and capture apps ported** (`src/demo/`) and wired into
+  the demo as third and fourth renderer views — the last files from the
+  delivered archives that were not yet in the canonical tree.
+- **Framer wrappers written** (`src/GridPulseScan.framer.tsx`,
+  `src/GridPulseScanPro.framer.tsx`): property controls for media
+  (image/video), preset/scene, detection, effects (incl. thermal), all eight
+  aspect ratios, mirror, activation, chrome. New implementations of the §10
+  wrappers that were never delivered; typechecked against the published
+  `framer` 3.0.4 type definitions (types-only package — Framer supplies the
+  runtime). Not part of the local build tree.
+- **[FINAL-REPORT.md](./FINAL-REPORT.md) produced** — the §8 closing
+  deliverable, linking every artifact.
+
+Verification unchanged and green. Remaining work is exactly the
+UNREACHABLE set; nothing actionable in this environment is left open.
