@@ -37,18 +37,31 @@ const VIEWPORTS = [
  * non-regression checks. Each names the single thing it is there to show.
  */
 const PRESETS = [
-    { id: "default", shows: "shipped defaults", props: {} },
-    { id: "detail-xray", shows: "Detail detection with the X-Ray effect over the whole frame", props: { detection: { mode: "detail" }, effect: { type: "xray", scope: "both" } } },
-    { id: "person-bitmap", shows: "Person detection with ordered-dither Bitmap callouts", props: { detection: { mode: "person" }, effect: { type: "bitmap", scope: "boxes" } } },
-    { id: "auto-pixelated", shows: "Auto detection with Pixelated callouts", props: { detection: { mode: "auto" }, effect: { type: "pixelated", scope: "boxes" } } },
-    { id: "code", shows: "Code glyph effect across the frame", props: { effect: { type: "code", scope: "both" } } },
-    { id: "point-mesh", shows: "point-to-point connection topology", props: { connections: { topology: "both", pointTopology: "chain" } } },
-    { id: "hub-mesh", shows: "hub connection topology", props: { connections: { topology: "points", pointTopology: "hub" } } },
-    { id: "tracking-frames", shows: "Specimen-style centred tracking frames", props: { boxes: { layout: "tracking" } } },
-    { id: "grid-scan", shows: "grid scan band with no callouts", props: { boxes: { visible: false }, grid: { animation: "scan" } } },
-    { id: "adaptive-chrome", shows: "regional adaptive chrome with halo", props: { theme: { adaptiveChrome: true, chromeSpatialMode: "regional", chromeHalo: true } } },
-    { id: "reduced-motion", shows: "reduced-motion reveal, all motion frozen", props: { motion: { respectReducedMotion: true, reducedMotionReveal: "instant" } } },
+    { id: "default", renderer: "engine", shows: "shipped engine defaults", props: {} },
+    // The parity plan's eleven named presets (rubric D6): each must render
+    // visibly distinctly from every other.
+    ...["loupe", "telemetry", "plate", "survey", "lattice", "contour", "hairline", "swarm", "field", "viewfinder", "tracking"].map(name => ({
+        id: `preset-${name}`,
+        renderer: "engine",
+        shows: `named preset "${name}"`,
+        props: { preset: name },
+    })),
+    { id: "effect-thermal", renderer: "engine", shows: "thermal false-colour effect on the media", props: { effect: { type: "thermal", scope: "media" } } },
+    { id: "effect-diffusion", renderer: "engine", shows: "Floyd-Steinberg diffusion onto the handheld palette", props: { effect: { type: "bitmap", bitmapMethod: "diffusion", bitmapPalette: "handheld", scope: "media" } } },
+    { id: "detail-xray", renderer: "engine", shows: "Detail detection with the X-Ray effect", props: { detection: { mode: "detail" }, effect: { type: "xray", scope: "media" } } },
+    { id: "person-bitmap", renderer: "engine", shows: "Person detection with ordered-dither Bitmap media", props: { detection: { mode: "person" }, effect: { type: "bitmap", scope: "media" } } },
+    { id: "code", renderer: "engine", shows: "Code glyph effect across the frame", props: { effect: { type: "code", scope: "media" } } },
+    { id: "adaptive-chrome", renderer: "engine", shows: "regional adaptive chrome with halo", props: { theme: { adaptiveChrome: true, chromeSpatialMode: "regional", chromeHalo: true } } },
+    { id: "reduced-motion", renderer: "engine", shows: "reduced-motion reveal, all motion frozen", props: { motion: { respectReducedMotion: true, reducedMotionReveal: "instant" } } },
+    // The integrated Specimen renderer's ten scenes.
+    ...["Feature Tracking", "Zoom Insets", "Survey Grid", "Detection Swarm", "Annotation Plate", "Point Mesh", "Viewfinder", "Contour Scan", "Facade Analysis", "Botanical Analysis"].map(name => ({
+        id: `specimen-${name.toLowerCase().replace(/\s+/g, "-")}`,
+        renderer: "integrated",
+        shows: `Specimen scene "${name}"`,
+        props: { preset: name, specimen: { showControls: false } },
+    })),
 ]
+
 
 const page = (viewport, preset) => {
     const props = {
@@ -57,6 +70,8 @@ const page = (viewport, preset) => {
         ...preset.props,
     }
     return `<!doctype html>
+<html>
+<head>
 <meta charset="utf-8">
 <title>harness ${preset.id} @ ${viewport.width}</title>
 <meta name="viewport" content="width=${viewport.width}, initial-scale=1">
@@ -68,27 +83,34 @@ const page = (viewport, preset) => {
     overflow: hidden;
   }
 </style>
+</head>
+<body>
 <div id="stage" data-harness-preset="${preset.id}" data-harness-width="${viewport.width}" data-harness-dpr="${viewport.dpr}"></div>
 <script type="module">
-  import { createRoot } from "/node_modules/react-dom/client"
-  import { createElement } from "/node_modules/react"
-  import GridPulseScan from "/src/GridPulseScanPro.tsx"
+  import { createRoot } from "react-dom/client"
+  import { createElement } from "react"
+  import SpecimenGridPulse, { GridPulseScan } from "/src/GridPulseScanPro.tsx"
 
   const props = ${JSON.stringify(props, null, 2)}
   props.style = { width: "100%", height: "100%" }
 
-  createRoot(document.getElementById("stage")).render(createElement(GridPulseScan, props))
+  const Component = ${preset.renderer === "integrated" ? "SpecimenGridPulse" : "GridPulseScan"}
+  createRoot(document.getElementById("stage")).render(createElement(Component, props))
 
   // A capture step should wait for this flag rather than for a fixed delay.
   window.__harnessReady = new Promise(resolve => {
+    const started = performance.now()
     const check = () => {
       const stage = document.getElementById("stage")
-      if (stage.querySelector("[data-grid-pulse-ready='true']")) resolve(true)
+      const ready = stage.querySelector("[data-grid-pulse-ready='true']")
+      if (ready || performance.now() - started > 15000) resolve(Boolean(ready))
       else requestAnimationFrame(check)
     }
     requestAnimationFrame(check)
   })
 </script>
+</body>
+</html>
 `
 }
 
@@ -103,6 +125,7 @@ for (const viewport of VIEWPORTS) {
         manifest.push({
             file,
             preset: preset.id,
+            renderer: preset.renderer,
             shows: preset.shows,
             viewportWidth: viewport.width,
             viewportHeight: viewport.height,

@@ -10,11 +10,20 @@ effects.
 
 ## Import
 
-There is exactly one entry point.
+There is exactly one entry point, exporting two renderers.
 
 ```tsx
-import GridPulseScan from "./src/GridPulseScanPro"
+// The integrated Specimen + Grid Pulse renderer (default export):
+import SpecimenGridPulse from "./src/GridPulseScanPro"
+// The lower-level Grid Pulse engine:
+import { GridPulseScan } from "./src/GridPulseScanPro"
 ```
+
+`SpecimenGridPulse` wraps the engine with ten scene presets, a HUD, a preset
+rail, plugin phases, GPU post-processing, and finish layers; its
+`composition` option selects `"integrated"` (default), `"grid-pulse"` (engine
+only), or `"specimen"` (overlay only). Everything below documents the engine;
+the Specimen surface is typed in full on `SpecimenGridPulseProps`.
 
 Everything public is re-exported from that file — the component, the defaults,
 every option type, and every pure policy function. Nothing outside it should
@@ -194,3 +203,66 @@ and preserving sequential pops.
 > inherited from v2.29 and has not been changed, because altering the accessible
 > role changes announced behaviour and no reference was available to compare
 > against. It is a candidate for a future iteration.
+
+
+---
+
+## Engine presets
+
+`preset` applies one of eleven named configuration bundles beneath your
+per-group overrides (your explicit options always win):
+
+`loupe · telemetry · plate · survey · lattice · contour · hairline · swarm ·
+field · viewfinder · tracking`
+
+Each bundle only turns public knobs — `GRID_PULSE_SCAN_PRESETS` lists the
+names, `resolveGridPulsePreset(name)` returns the bundle. Captures of all
+eleven at 1200 px are committed under `docs/captures/`.
+
+## Thermal effect and dither palettes
+
+- `effect.type: "thermal"` — false-colour from luminance with
+  `thermalPalette: "ironbow" | "white-hot" | "rainbow"`, plus
+  `thermalContrast`, `thermalBrightness`, `thermalGamma`.
+- `effect.bitmapMethod: "diffusion"` — Floyd–Steinberg error diffusion.
+- `effect.bitmapPalette: "none" | "duotone" | "mono4" | "handheld" | "amber" |
+  "cmyk"` — named palettes honoured by the ordered, threshold, and diffusion
+  methods; `"none"` preserves the tint-on-background behaviour.
+
+## Label tokens (full set)
+
+`{score} {id} {coords} {time} {zoom} {mode} {pct} {index} {n} {x} {y} {label}
+{fps}` — see `labels.template`. `labels.letterSpacing` (em, default 0.085) and
+`labels.uppercase` (default true) carry the plan's measured chip calibration.
+
+## Density and tracking at scale
+
+`detection.pointCount` accepts up to 80. Identity assignment uses the exact
+minimum-cost solver up to 12 points and a greedy nearest-first pass above
+(`EXACT_ASSIGNMENT_LIMIT`), keeping dense fields tractable.
+
+## Custom detector hook
+
+```tsx
+detection={{
+    customDetector: async ({ canvas, width, height, count, focus }) => {
+        // your model here — return normalized points
+        return [{ x: 0.4, y: 0.5, score: 0.9, id: "CELL-01" }]
+    },
+}}
+```
+
+The hook replaces the built-in scan; exceptions or rejections fall back to
+built-in detection and surface through `onError`. The hook participates in
+options identity by presence, not function identity.
+
+## Vision framework (Specimen surface)
+
+`VisionPlugin` (phases `before-overlay | after-overlay | post-process`),
+`InspectionEffectStack`, `VisionTheme` / `SCIENTIFIC_VISION_THEME`,
+`VisionPerformanceMonitor`, `VisionTimeline`,
+`createCanvasCaptureController` (MediaRecorder-backed),
+`VisionSceneGraphStore` (nearest / mst / mesh), `RenderingPipeline` with
+`RENDERER_PROFILES`, `GpuPostProcessor` with automatic WebGL2 detection and
+canvas2d fallback, and adaptive quality (`resolveVisionQuality`,
+`degradeQuality`). All exported from the entry point.

@@ -1,4 +1,4 @@
-# Baseline report — v3.0.0-rc.1
+# Baseline report — v3.0.0-rc.2
 
 The first baseline measured on one canonical build. Every number below was
 produced by a command in this repository and can be reproduced with
@@ -118,3 +118,26 @@ measurements against a reference runtime that this environment cannot reach.
 Asserting a number would mean converting inference into a pass, which the plan
 explicitly forbids. See [SCORECARD.md](./SCORECARD.md) for the row-by-row
 record.
+
+
+---
+
+## Delta: v3.0.0-rc.1 → v3.0.0-rc.2
+
+| Measure | rc.1 | rc.2 |
+| --- | --- | --- |
+| Tests | 85 across 5 files | **110 across 12 files** (incl. the 5 v2.8 suites and the parity-features suite) |
+| Option properties | 238 | **245** (+7, 0 removals) |
+| Enumerated modes | 36 | **37** |
+| Exported values / types | 51 / 84 | **83 / 116** (Specimen + vision framework surface) |
+| Effects | 5 | **6** (+ thermal; + diffusion method, 5 dither palettes) |
+| Label tokens | 6 | **13** |
+| Point ceiling | 12 | **80** (greedy tracker path above 12) |
+| Named engine presets | 0 | **11** |
+| Specimen scenes | 0 | **10** |
+| Browser evidence | none | **29 captures, 2 instruments, 0 page errors** |
+| Defects found by instruments | 5 | **6** (+ the demand-loop freeze, iteration 10) |
+
+Quality floors are unchanged and green (5/5): 5.938 / 3.023 / 3 of 72 /
+85.1 px / 9.0 px. The full verify command is unchanged: `npm run verify`.
+Captures and distinctness tables: `docs/captures/`.

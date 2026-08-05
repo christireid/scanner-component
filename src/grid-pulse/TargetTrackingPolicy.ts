@@ -36,12 +36,51 @@ const assignmentCost = (
     return distance + scoreDelta * options.scoreWeight
 }
 
-/** Exact minimum-cost assignment for the component's bounded point sets (<=12). */
+/**
+ * Greedy nearest-first assignment used above the exact solver's size bound.
+ * Pairs are taken in ascending cost order; each track and point is used once.
+ */
+const solveGreedyAssignment = (
+    tracks: TrackedPoint[],
+    points: TrackingPointInput[],
+    options: TargetTrackingOptions
+): Array<[number, number]> => {
+    const candidates: Array<{ cost: number; track: number; point: number }> = []
+    for (let trackIndex = 0; trackIndex < tracks.length; trackIndex += 1) {
+        for (let pointIndex = 0; pointIndex < points.length; pointIndex += 1) {
+            const cost = assignmentCost(tracks[trackIndex], points[pointIndex], options)
+            if (cost <= options.maxDistance) candidates.push({ cost, track: trackIndex, point: pointIndex })
+        }
+    }
+    candidates.sort((a, b) => a.cost - b.cost)
+    const usedTracks = new Set<number>()
+    const usedPoints = new Set<number>()
+    const pairs: Array<[number, number]> = []
+    for (const candidate of candidates) {
+        if (usedTracks.has(candidate.track) || usedPoints.has(candidate.point)) continue
+        usedTracks.add(candidate.track)
+        usedPoints.add(candidate.point)
+        pairs.push([candidate.track, candidate.point])
+    }
+    return pairs
+}
+
+/** Point sets past this size use greedy assignment; the exact solver is exponential in points. */
+export const EXACT_ASSIGNMENT_LIMIT = 12
+
+/**
+ * Minimum-cost assignment. Exact (bitmask DP) up to EXACT_ASSIGNMENT_LIMIT
+ * points and tracks; greedy nearest-first beyond it, which keeps density mode
+ * (up to 80 points) tractable at the cost of occasional non-optimal pairing.
+ */
 export const solveTargetAssignment = (
     tracks: TrackedPoint[],
     points: TrackingPointInput[],
     options: TargetTrackingOptions
 ) => {
+    if (points.length > EXACT_ASSIGNMENT_LIMIT || tracks.length > EXACT_ASSIGNMENT_LIMIT) {
+        return solveGreedyAssignment(tracks, points, options)
+    }
     const memo = new Map<string, { cost: number; pairs: Array<[number, number]> }>()
     const visit = (trackIndex: number, mask: number): { cost: number; pairs: Array<[number, number]> } => {
         if (trackIndex >= tracks.length) return { cost: 0, pairs: [] }
@@ -134,7 +173,8 @@ export class StableTargetTracker {
                 missed: 0,
             })
         })
-        this.tracks = next.slice(0, 12)
+        // Bounded by density mode (80 visible) plus coasting lost tracks.
+        this.tracks = next.slice(0, 96)
         return this.tracks.filter(track => track.missed === 0)
     }
 }

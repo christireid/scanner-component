@@ -1,4 +1,4 @@
-export type BitmapMethod = "threshold" | "ordered" | "halftone"
+export type BitmapMethod = "threshold" | "ordered" | "halftone" | "diffusion"
 export type BitmapMatrix = "bayer2" | "bayer4" | "bayer8"
 export type BitmapAnchor = "image" | "center"
 export type BitmapDotShape = "square" | "circle"

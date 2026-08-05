@@ -34,6 +34,9 @@ import { resolveGridPulseInteractionAlpha } from "./InteractionTransitionPolicy"
 import { resolveGridPulseRescanTransition } from "./RescanTransitionPolicy"
 import { resolveGridPulseXraySample } from "./XrayEffectPolicy"
 import { parseBoxShadow } from "./BoxShadowPolicy"
+import { resolveGridPulsePreset } from "./GridPulsePresets"
+import { resolveGridPulseThermalSample } from "./ThermalEffectPolicy"
+import { diffuseToPalette, resolveBitmapPalette } from "./DitherPalettePolicy"
 import { quantizeChannel, resolvePixelatedGrid } from "./PixelatedEffectPolicy"
 import { resolveCodeGlyph, resolveCodeGrid, resolveCodeSignal } from "./CodeEffectPolicy"
 import { resolveBitmapGrid, bitmapThresholdAt, quantizeBitmapLevel } from "./BitmapEffectPolicy"
@@ -424,6 +427,44 @@ const applyBitmap = (
     targetCtx.fillStyle = options.background
     targetCtx.fillRect(0, 0, target.width, target.height)
     const cell = grid.cellSize
+
+    if (options.bitmapMethod === "diffusion") {
+        // Floyd–Steinberg error diffusion onto the selected palette. The
+        // diffusion buffer is gamma-adjusted RGB so the palette match sees the
+        // same tone curve as the other bitmap methods.
+        const palette = resolveBitmapPalette(options.bitmapPalette, tint, background)
+        const rgb = new Float32Array(grid.columns * grid.rows * 3)
+        const gamma = Math.max(0.05, options.bitmapGamma)
+        for (let cellIndex = 0; cellIndex < grid.columns * grid.rows; cellIndex += 1) {
+            const sourceIndex = cellIndex * 4
+            const targetIndex = cellIndex * 3
+            rgb[targetIndex] = Math.pow(clamp(data[sourceIndex] / 255, 0, 1), gamma) * 255
+            rgb[targetIndex + 1] = Math.pow(clamp(data[sourceIndex + 1] / 255, 0, 1), gamma) * 255
+            rgb[targetIndex + 2] = Math.pow(clamp(data[sourceIndex + 2] / 255, 0, 1), gamma) * 255
+        }
+        const indices = diffuseToPalette(rgb, grid.columns, grid.rows, palette)
+        for (let y = 0; y < grid.rows; y += 1) {
+            for (let x = 0; x < grid.columns; x += 1) {
+                const chosen = palette[indices[y * grid.columns + x]]
+                targetCtx.fillStyle = `rgb(${Math.round(chosen.r)},${Math.round(chosen.g)},${Math.round(chosen.b)})`
+                if (options.bitmapDotShape === "circle") {
+                    targetCtx.beginPath()
+                    targetCtx.arc(grid.offsetX + x * cell + cell / 2, grid.offsetY + y * cell + cell / 2, cell * 0.5, 0, Math.PI * 2)
+                    targetCtx.fill()
+                } else {
+                    targetCtx.fillRect(grid.offsetX + x * cell, grid.offsetY + y * cell, cell, cell)
+                }
+            }
+        }
+        return
+    }
+
+    // Ordered and threshold methods honour a named palette by quantizing the
+    // dithered level onto it; the default "none" palette preserves the
+    // original tint-on-background behaviour exactly.
+    const namedPalette = options.bitmapPalette !== "none"
+        ? resolveBitmapPalette(options.bitmapPalette, tint, background)
+        : null
     for (let y = 0; y < grid.rows; y++) {
         for (let x = 0; x < grid.columns; x++) {
             const i = (y * grid.columns + x) * 4
@@ -436,6 +477,24 @@ const applyBitmap = (
                 level = luminance >= bitmapThresholdAt(options.bitmapMatrix, x, y, options.bitmapThreshold, options.intensity) ? 1 : 0
             } else {
                 level = quantizeBitmapLevel(luminance, options.bitmapLevels)
+            }
+            if (namedPalette) {
+                const paletteIndex = Math.min(
+                    namedPalette.length - 1,
+                    Math.round(level * (namedPalette.length - 1))
+                )
+                const chosen = namedPalette[paletteIndex]
+                const px = grid.offsetX + x * cell
+                const py = grid.offsetY + y * cell
+                targetCtx.fillStyle = `rgb(${Math.round(chosen.r)},${Math.round(chosen.g)},${Math.round(chosen.b)})`
+                if (options.bitmapDotShape === "circle" || options.bitmapMethod === "halftone") {
+                    targetCtx.beginPath()
+                    targetCtx.arc(px + cell / 2, py + cell / 2, Math.max(0.5, cell * 0.5 * Math.max(level, 0.35)), 0, Math.PI * 2)
+                    targetCtx.fill()
+                } else {
+                    targetCtx.fillRect(px, py, cell, cell)
+                }
+                continue
             }
             if (level <= 0) continue
             const px = grid.offsetX + x * cell
@@ -654,6 +713,35 @@ const applyXray = (
     targetCtx.putImageData(image, 0, 0)
 }
 
+const applyThermal = (
+    source: HTMLCanvasElement,
+    target: HTMLCanvasElement,
+    options: GridPulseEffectOptions
+) => {
+    const targetCtx = target.getContext("2d", { willReadFrequently: true })
+    if (!targetCtx) return
+    targetCtx.clearRect(0, 0, target.width, target.height)
+    targetCtx.drawImage(source, 0, 0, target.width, target.height)
+    const image = targetCtx.getImageData(0, 0, target.width, target.height)
+    const data = image.data
+    const mix = clamp(options.intensity, 0, 1)
+    for (let i = 0; i < data.length; i += 4) {
+        const luminance =
+            (data[i] * 0.2126 + data[i + 1] * 0.7152 + data[i + 2] * 0.0722) / 255
+        const sample = resolveGridPulseThermalSample({
+            luminance,
+            palette: options.thermalPalette,
+            contrast: options.thermalContrast,
+            brightness: options.thermalBrightness,
+            gamma: options.thermalGamma,
+        })
+        data[i] = lerp(data[i], sample.r, mix)
+        data[i + 1] = lerp(data[i + 1], sample.g, mix)
+        data[i + 2] = lerp(data[i + 2], sample.b, mix)
+    }
+    targetCtx.putImageData(image, 0, 0)
+}
+
 const applyEffect = (
     source: HTMLCanvasElement,
     target: HTMLCanvasElement,
@@ -670,6 +758,7 @@ const applyEffect = (
     if (options.type === "bitmap") applyBitmap(source, target, options)
     else if (options.type === "pixelated") applyPixelated(source, target, options)
     else if (options.type === "code") applyCode(source, target, options)
+    else if (options.type === "thermal") applyThermal(source, target, options)
     else applyXray(source, target, options)
 }
 
@@ -1408,6 +1497,9 @@ const drawLabel = (
         mode: GridPulseDetectionMode
         wallClockMs: number
         scanStartedAtMs: number
+        index: number
+        total: number
+        fps: number
     },
     alpha: number
 ) => {
@@ -1424,10 +1516,22 @@ const drawLabel = (
         scorePrecision: options.scorePrecision,
         timeFormat: options.timeFormat,
         timecodeFps: options.timecodeFps,
+        index: meta.index,
+        total: meta.total,
+        nx: point.x,
+        ny: point.y,
+        fps: meta.fps,
     })
     if (options.uppercase) text = text.toUpperCase()
     ctx.save()
     ctx.font = options.font
+    // Letter tracking. Canvas letterSpacing takes a CSS length; em is resolved
+    // against the parsed font size so the option reads like CSS.
+    if (options.letterSpacing !== 0 && "letterSpacing" in ctx) {
+        const fontSize = Number((options.font.match(/(\d+(?:\.\d+)?)px/) || [])[1]) || 10
+        ;(ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing =
+            `${(options.letterSpacing * fontSize).toFixed(3)}px`
+    }
     ctx.textAlign = "left"
     ctx.textBaseline = "top"
     const metrics = ctx.measureText(text)
@@ -1466,7 +1570,9 @@ const drawZoomBox = (
     crosshairCoordinateStyle: GridPulseCrosshairOptions["coordinateStyle"],
     wallClockMs: number,
     scanStartedAtMs: number,
-    index: number
+    index: number,
+    totalPoints: number,
+    overlayFps: number
 ) => {
     const bw = Math.max(1, Math.round(box.width))
     const bh = Math.max(1, Math.round(box.height))
@@ -1649,6 +1755,9 @@ const drawZoomBox = (
             mode: detectionMode,
             wallClockMs,
             scanStartedAtMs,
+            index: index + 1,
+            total: totalPoints,
+            fps: overlayFps,
         },
         alpha * animationState.mediaProgress
     )
@@ -1759,6 +1868,7 @@ function useStableOptions<T extends object>(value: T): T {
  */
 export default function GridPulseScan({
     src,
+    preset,
     alt = "Interactive scanned media",
     aspectRatio = "free",
     media: mediaOverrides,
@@ -1782,18 +1892,21 @@ export default function GridPulseScan({
     onError,
     onRenderBridge,
 }: GridPulseScanProps) {
+    // defaults ← preset bundle ← caller overrides: presets are convenience,
+    // never authority.
+    const presetBundle = resolveGridPulsePreset(preset)
     const media = useStableOptions({ ...DEFAULT_MEDIA, ...mediaOverrides })
-    const detection = useStableOptions({ ...DEFAULT_DETECTION, ...detectionOverrides })
-    const grid = useStableOptions({ ...DEFAULT_GRID, ...gridOverrides })
-    const connections = useStableOptions({ ...DEFAULT_CONNECTIONS, ...connectionOverrides })
-    const crosshair = useStableOptions({ ...DEFAULT_CROSSHAIR, ...crosshairOverrides })
-    const boxes = useStableOptions({ ...DEFAULT_BOXES, ...boxOverrides })
-    const labels = useStableOptions({ ...DEFAULT_LABELS, ...labelOverrides })
-    const effect = useStableOptions({ ...DEFAULT_EFFECT, ...effectOverrides })
-    const interaction = useStableOptions({ ...DEFAULT_INTERACTION, ...interactionOverrides })
-    const motion = useStableOptions({ ...DEFAULT_MOTION, ...motionOverrides })
+    const detection = useStableOptions({ ...DEFAULT_DETECTION, ...presetBundle.detection, ...detectionOverrides })
+    const grid = useStableOptions({ ...DEFAULT_GRID, ...presetBundle.grid, ...gridOverrides })
+    const connections = useStableOptions({ ...DEFAULT_CONNECTIONS, ...presetBundle.connections, ...connectionOverrides })
+    const crosshair = useStableOptions({ ...DEFAULT_CROSSHAIR, ...presetBundle.crosshair, ...crosshairOverrides })
+    const boxes = useStableOptions({ ...DEFAULT_BOXES, ...presetBundle.boxes, ...boxOverrides })
+    const labels = useStableOptions({ ...DEFAULT_LABELS, ...presetBundle.labels, ...labelOverrides })
+    const effect = useStableOptions({ ...DEFAULT_EFFECT, ...presetBundle.effect, ...effectOverrides })
+    const interaction = useStableOptions({ ...DEFAULT_INTERACTION, ...presetBundle.interaction, ...interactionOverrides })
+    const motion = useStableOptions({ ...DEFAULT_MOTION, ...presetBundle.motion, ...motionOverrides })
     const rendering = useStableOptions({ ...DEFAULT_RENDERING, ...renderingOverrides })
-    const theme = useStableOptions({ ...DEFAULT_THEME, ...themeOverrides })
+    const theme = useStableOptions({ ...DEFAULT_THEME, ...presetBundle.theme, ...themeOverrides })
 
     const wrapperRef = useRef<HTMLDivElement | null>(null)
     const mediaCanvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -1854,6 +1967,8 @@ export default function GridPulseScan({
     const mediaDirtyRef = useRef(true)
     const overlayDirtyRef = useRef(true)
     const lastFrameRef = useRef(0)
+    /** Exponentially smoothed overlay frame rate. Feeds the {fps} label token. */
+    const overlayFpsRef = useRef(0)
     const lastMediaFrameRef = useRef(0)
     const reducedMotionRef = useRef(false)
     const isCoarsePointerRef = useRef(false)
@@ -1972,7 +2087,7 @@ export default function GridPulseScan({
                 }
 
                 const canvas = sourceCanvasRef.current
-                const requestedCount = clamp(Math.round(detection.pointCount), 1, 12)
+                const requestedCount = clamp(Math.round(detection.pointCount), 1, 80)
                 const source = videoRef.current || imageRef.current
                 if (source) {
                     const { width, height } = sizeRef.current
@@ -1992,6 +2107,46 @@ export default function GridPulseScan({
                     }
                 }
                 try {
+                    // A supplied detector hook overrides the built-in scan
+                    // entirely; failures fall through to the built-in path.
+                    if (detection.customDetector) {
+                        try {
+                            const hookPoints = await detection.customDetector({
+                                canvas,
+                                width: canvas.width,
+                                height: canvas.height,
+                                count: requestedCount,
+                                focus: request.focus || null,
+                            })
+                            if (
+                                Array.isArray(hookPoints) &&
+                                hookPoints.length > 0 &&
+                                request.id === latestScanRequestRef.current &&
+                                request.generation === sourceGenerationRef.current
+                            ) {
+                                commitPoints(
+                                    hookPoints
+                                        .filter(point => Number.isFinite(point.x) && Number.isFinite(point.y))
+                                        .slice(0, requestedCount)
+                                        .map((point, index) => ({
+                                            x: clamp(point.x, 0, 1),
+                                            y: clamp(point.y, 0, 1),
+                                            score: clamp(point.score ?? 1 - index * 0.08, 0, 1),
+                                            id: point.id || `HOOK-${String(index + 1).padStart(2, "0")}`,
+                                        }))
+                                )
+                                overlayDirtyRef.current = true
+                                continue
+                            }
+                        } catch (hookError) {
+                            onError?.(
+                                hookError instanceof Error
+                                    ? new Error(`Custom detector failed, using built-in detection: ${hookError.message}`)
+                                    : new Error("Custom detector failed, using built-in detection.")
+                            )
+                        }
+                    }
+
                     if (detection.mode === "custom" && detection.manualPoints.length > 0) {
                         const customPoints: GridPulsePoint[] = []
                         if (request.focus) {
@@ -2494,6 +2649,13 @@ export default function GridPulseScan({
                 schedule()
                 return
             }
+            const frameDelta = now - lastFrameRef.current
+            if (frameDelta > 0 && frameDelta < 1000) {
+                const instantFps = 1000 / frameDelta
+                overlayFpsRef.current = overlayFpsRef.current === 0
+                    ? instantFps
+                    : overlayFpsRef.current * 0.9 + instantFps * 0.1
+            }
             lastFrameRef.current = now
             // Resolve wall-clock tokens once per rendered frame so every chip agrees at second boundaries.
             const frameWallClockMs = Date.now()
@@ -2672,11 +2834,20 @@ export default function GridPulseScan({
                 x: (crosshairPositionRef.current.x - 0.5) * boxes.trackingParallax,
                 y: (crosshairPositionRef.current.y - 0.5) * boxes.trackingParallax,
             }
+            // Transitions must keep the loop alive even while the overlay is at
+            // alpha 0: the rescan fade passes through a fully transparent gap
+            // phase, and gating those frames behind `overlayAlpha > 0` freezes
+            // the loop mid-blackout with the overlay cleared. It looked fine
+            // under a pointer (any event revives the loop) and died headless —
+            // found by instrumenting rAF counts in a real browser.
+            const transitionsAnimating =
+                !reducedMotionRef.current && (interactionAnimating || rescanAnimating)
             const overlayAnimated =
-                overlayAlpha > 0 &&
-                !reducedMotionRef.current &&
-                (grid.animate || connections.pulse || connections.animation !== "static" || boxes.scanSweep || boxes.animation !== "static" || interactionAnimating || rescanAnimating ||
-                revealsAnimating || crosshairAnimating)
+                transitionsAnimating ||
+                (overlayAlpha > 0 &&
+                    !reducedMotionRef.current &&
+                    (grid.animate || connections.pulse || connections.animation !== "static" || boxes.scanSweep || boxes.animation !== "static" ||
+                    revealsAnimating || crosshairAnimating))
             const shouldDrawOverlay = overlayDirtyRef.current || overlayAnimated
 
             if (shouldDrawOverlay) {
@@ -2990,7 +3161,9 @@ export default function GridPulseScan({
                             crosshair.coordinateStyle,
                             frameWallClockMs,
                             scanCommittedAtRef.current,
-                            index
+                            index,
+                            points.length,
+                            overlayFpsRef.current
                         )
                     }
                 })

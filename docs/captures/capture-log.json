@@ -1,0 +1,102 @@
+[
+  {
+    "id": "preset-loupe",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-telemetry",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-plate",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-survey",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-lattice",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-contour",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-hairline",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-swarm",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-field",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-viewfinder",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "preset-tracking",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "default-390",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "default-768",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "default-1440",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "default-2560",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "effect-thermal",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "effect-diffusion",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "specimen-feature-tracking",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "specimen-viewfinder",
+    "ready": true,
+    "errors": []
+  },
+  {
+    "id": "specimen-botanical-analysis",
+    "ready": true,
+    "errors": []
+  }
+]

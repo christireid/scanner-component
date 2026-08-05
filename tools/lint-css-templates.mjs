@@ -83,6 +83,8 @@ const isColourLiteral = value =>
     value === "" ||
     value === "transparent" ||
     value === "none" ||
+    // A gradient in a `background:` key is a valid image value, not a colour.
+    /^(repeating-)?(linear|radial|conic)-gradient\(/.test(value) ||
     /^#[0-9a-fA-F]{3,8}$/.test(value) ||
     /^rgba?\([^)]*\)$/.test(value) ||
     /^hsla?\([^)]*\)$/.test(value)

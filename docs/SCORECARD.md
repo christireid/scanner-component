@@ -1,130 +1,89 @@
-# Parity scorecard — v3.0.0-rc.1
+# Parity scorecard — v3.0.0-rc.2
 
-Every row carries exactly one of four states.
+Rubric: the original [PARITY-PLAN.md](./PARITY-PLAN.md) §7. Every row carries
+exactly one of PASS / PARTIAL / FAIL / UNVERIFIABLE-HERE. A machine-readable
+copy is [parity-score.json](./parity-score.json).
 
-| State | Meaning |
+**No total is computed.** Sections B and C (60 of 100 points) require
+comparison against a reference runtime this environment cannot reach
+([UNREACHABLE.md](./UNREACHABLE.md) §1 — verified at browser level). Scoring
+them would convert inference into measurement, which §E forbids.
+
+Evidence tiers used below: **[browser]** = measured on our build in local
+Chromium (`docs/captures/`, instruments in `tools/`); **[test]** = deterministic
+suite; **[source]** = present and configurable in source.
+
+---
+
+## Section A — Scope parity (20 pts)
+
+| # | Criterion | State | Evidence |
+| --- | --- | --- | --- |
+| A1 | Auto, Person, Detail present and visibly different | **PASS** | [test] modes produce measurably different point sets on the same field; [browser] captures per mode. |
+| A2 | Grid overlay, configurable opacity, animated | **PASS (presence)** | [browser] drift/dash/pulse/scan channels render and animate; whether the reference's grid animates the same way is UNVERIFIABLE-HERE (§4.1 hypothesis untestable). |
+| A3 | Connection lines with tick marks, reference topology | **PASS (presence)** | [browser] leaders, point-to-point, and both render with ticks; the reference's default topology is UNVERIFIABLE-HERE (§4.2). Default stays `leaders`, deliberately. |
+| A4 | Scan sweep across boxes | **PASS** | [browser] travelling band visible in captures; 4 directions, 3 modes [test]. |
+| A5 | Crosshair with coordinate readout | **PASS** | [browser] visible top-left readout in captures; follows pointer [test policy]. |
+| A6 | All four chip tokens render | **PASS** | [test] `{score} {id} {coords} {time}` plus `{zoom} {mode} {pct} {index} {n} {x} {y} {label} {fps}` — string-for-string assertions. |
+| A7 | Click-to-rescan | **PASS** | [source+test policy] focused rescan around the click; rescan transition tested. |
+| A8 | Always-on mode | **PASS** | [browser] all captures run activation="always" with no pointer. |
+| A9 | Bitmap, Pixelated, Code, X-Ray all present | **PASS** | [browser] captures per effect; plus `thermal` and `none` (§2.1 row 9). |
+| A10 | Image + video, 8 aspect ratios, mirror | **PASS (image [browser], video [source])** | image pathway captured; video pathway present with rVFC, Range-capable server shipped; not exercised headless (no fixture media delivered). |
+
+**Section A: 10 rows PASS at presence level; A2/A3 carry an explicit
+reference-default caveat.**
+
+## Section B — Visual fidelity (30 pts)
+
+All ten rows **UNVERIFIABLE-HERE** — they are defined as comparisons at 1200 px
+/ DPR 2 against the live reference on identical media. Neither the runtime nor
+the demo media is reachable (both proven at browser level). Our side of every
+quantity is measured and recorded in captures and defaults; the reference side
+does not exist here.
+
+| Rows | State |
 | --- | --- |
-| **PASS** | Measured, and the measurement satisfies the row. |
-| **PARTIAL** | Measured, and the measurement partly satisfies the row. |
-| **FAIL** | Measured, and the measurement does not satisfy the row. |
-| **UNVERIFIABLE-HERE** | Not measured, because the measurement is impossible in this environment. The reason is stated per row. |
+| B1–B10 | UNVERIFIABLE-HERE ([UNREACHABLE.md](./UNREACHABLE.md) §1) |
 
-**No total is computed.** Sections B and C are worth 60 of the 100 points and
-are entirely unverifiable here, so any total would be a guess dressed as a
-score. The reason is recorded once in [UNREACHABLE.md](./UNREACHABLE.md) §1:
-`framer.com` and `*.framer.website` are denied by this session's egress policy,
-so the reference runtime was never observed.
+## Section C — Behavioural fidelity (30 pts)
 
----
+Same instrument gap as Section B. Our timings are now *browser-verified to
+run* (reveal, sweep, rescan, always-on idle all animate in captures; the
+demand-driven loop holds ≈60 fps) — but "the same as the reference" is
+unmeasurable here.
 
-## Section A — Scope parity (20 points)
+| Rows | State |
+| --- | --- |
+| C1–C9 | UNVERIFIABLE-HERE ([UNREACHABLE.md](./UNREACHABLE.md) §1) |
 
-The marketplace feature list for **Grid Pulse Scan**, plus the **Specimen**
-capabilities this component is meant to absorb.
+## Section D — Non-regression (20 pts)
 
-| # | Row | State | Evidence |
+| # | Criterion | State | Evidence |
 | --- | --- | --- | --- |
-| A1 | Auto, Person, Detail detection modes | PASS | `DetectionModePolicy.ts`; 3 modes produce measurably different point sets (`detection.test.ts`). |
-| A2 | Animated grid | PASS | `GridAnimationPolicy.ts` — 5 animation modes, 3 scan directions. |
-| A3 | Point and box connections with tick marks | PASS | `connections.topology` = leaders / points / both; `tickMarks`, `tickSpacing`, `tickLength`. |
-| A4 | Box scan sweeps | PASS | `ScanSweepPolicy.ts` — 4 directions, 3 modes, 2 easings. |
-| A5 | Crosshair and coordinate readout | PASS | `crosshair.showCoordinates`; latlon / percent / pixels. |
-| A6 | `{score}`, `{id}`, `{coords}`, `{time}` tokens | PASS | `LabelTokenPolicy.ts`; also `{zoom}` and `{mode}`. Verified by `labels.test.ts`. |
-| A7 | Click-to-rescan | PASS | `interaction.clickToRescan`, with a focused rescan around the click. |
-| A8 | Always-on operation | PASS | `interaction.activation: "always"`. |
-| A9 | Bitmap, Pixelated, Code, X-Ray effects | PASS | Four effect policies, each with its own option group. |
-| A10 | Image and video pathways | PASS | `inferMediaType`, `requestVideoFrameCallback`, playback options. |
-| A11 | Aspect ratios and mirroring | PASS | 8 ratios; `media.mirror`. |
-| A12 | Configurable grid, crosshair, connections, labels, boxes, interaction, rendering, detection | PASS | 12 option groups, 238 properties. |
-| A13 | Specimen-style centred tracking frames | PASS | `boxes.layout: "tracking"` — see [PARITY-LOG](./PARITY-LOG.md) iteration 3. |
-| A14 | Superset: tracking, video reacquisition, point meshes, dither modes, contour tracing, density modes, parallax, viewfinder telemetry, custom detector hooks, imperative API | PASS | Asserted row by row in `api-contract.test.ts`; `GridPulseRenderBridge` provides the imperative API. |
-| A15 | End-to-end scope confirmed against the reference listings | **UNVERIFIABLE-HERE** | Both marketplace pages return 403 at CONNECT. The feature list this section is checked against came from the task description, not from an observed page. |
+| D1 | Feature inventory has not shrunk | **PASS** | `npm run inventory`: 0 removals; 245 properties / 37 modes / 83 values / 116 types (grew every milestone). |
+| D2 | All 79 checks green | **UNVERIFIABLE-HERE** for the original suite (never delivered, §3); the replacement — 110 checks incl. the five v2.8 suites — is green. |
+| D3 | Detection quality ≥ 1.30 / worst ≥ 1.06 / dead ≤ 4 of 72 | **PASS (substitute corpus)** | 5.938 / 3.023 (worst scene×mode; reinterpretation recorded §4) / 3 of 72. |
+| D4 | Phone scale: 41 px box, 7 px type at 390 | **PASS** | 85.1 px / 9.0 px measured; [browser] 390 px capture committed. |
+| D5 | lint:css and typecheck clean | **PASS** | 0 errors each, strict + noUnusedLocals. |
+| D6 | All 11 presets render distinctly | **PASS** | [browser] 11/11 captured at 1200 px, 0 page errors; overlay-alpha coverage 0.4–29.9%; pairwise tables in `docs/captures/preset-distinctness.json`; closest pairs verified distinct by inspection. Presets are new implementations (originals undelivered) — provenance in source. |
 
-**Section A: 14 PASS, 1 UNVERIFIABLE-HERE.**
+**Section D: 5 PASS, 1 UNVERIFIABLE-HERE (D2, original-suite half), 0 FAIL.**
 
----
-
-## Section B — Visual fidelity (30 points)
-
-Every row requires a side-by-side comparison at 1200 px / DPR 2 on identical
-media. None was possible.
-
-| # | Row | State | What we have instead |
-| --- | --- | --- | --- |
-| B1 | Box dimensions | UNVERIFIABLE-HERE | Ours: 112 × 112 px, × 0.76 when the frame is under 600 px. The reference's are unknown. |
-| B2 | Marker form and scale | UNVERIFIABLE-HERE | Ours: 7 px square outline plus a 2 px core; circle and cross available. |
-| B3 | Chip typography and padding | UNVERIFIABLE-HERE | Ours: 9 px monospace, 5 px / 3 px padding, offset 5 / 5 from the box corner. |
-| B4 | Exact token formatting | UNVERIFIABLE-HERE | Ours is fully specified and tested; the reference's output strings were never seen. The shipped default template is a change from the delivered build — see [PARITY-LOG](./PARITY-LOG.md) iteration 2. |
-| B5 | Grid spacing and opacity | UNVERIFIABLE-HERE | Ours: 150 px, opacity 0.14, 1 px, dash [2, 7], 2 subdivisions. |
-| B6 | Accent and chrome colours | UNVERIFIABLE-HERE | Ours: `#ffffff` chrome on `#000000`, adaptive light/dark selection available. |
-| B7 | Connector and tick geometry | UNVERIFIABLE-HERE | Ours: 1 px, dash [2, 6], ticks every 34 px, 5 px long. |
-| B8 | Corner-bracket geometry | UNVERIFIABLE-HERE | Ours: 12 px arms, 2 px stroke, clamped to a third of the box. |
-| B9 | HUD placement | UNVERIFIABLE-HERE | Not applicable to this build — the HUD is a v2.34 artifact that was not delivered. See [UNREACHABLE.md](./UNREACHABLE.md) §2. |
-| B10 | Overall structural similarity | UNVERIFIABLE-HERE | No reference frame exists to compare against. |
-
-**Section B: 0 PASS, 10 UNVERIFIABLE-HERE.**
-
----
-
-## Section C — Behavioural fidelity (30 points)
-
-Deterministic previews prove our policies behave consistently. They prove
-nothing about whether that behaviour matches the reference.
-
-| # | Row | State | What we have instead |
-| --- | --- | --- | --- |
-| C1 | Total reveal duration | UNVERIFIABLE-HERE | Ours: 420 ms per point. |
-| C2 | Per-point stagger | UNVERIFIABLE-HERE | Ours: 90 ms reveal stagger, 52 ms box stagger. |
-| C3 | Reveal easing | UNVERIFIABLE-HERE | Ours: `easeOut` (cubic); linear and easeInOut available. |
-| C4 | Sweep period and direction | UNVERIFIABLE-HERE | Ours: 1 450 ms, vertical, looping, linear. |
-| C5 | Crosshair latency | UNVERIFIABLE-HERE | Ours: 95 ms to 99% of the gap, frame-rate independent (tested at 60 and 30 Hz). |
-| C6 | Hover-out timing | UNVERIFIABLE-HERE | Ours: 90 ms leave delay, then a 220 ms fade. |
-| C7 | Actual rescan semantics | UNVERIFIABLE-HERE | Ours: fade out 150 ms → 35 ms gap → fade in 240 ms, with a focused search around the click. |
-| C8 | Idle motion | UNVERIFIABLE-HERE | Ours: grid drift 10 / 6 px·s⁻¹, 0.2 pulse, 0.34 scan band; box breath 0.006. |
-| C9 | Touch model | UNVERIFIABLE-HERE | Ours: `auto` resolves to always / tap-toggle / rescan from activation and `mobileAlwaysOn`; tested. |
-
-**Section C: 0 PASS, 9 UNVERIFIABLE-HERE.**
-
----
-
-## Section D — Non-regression (20 points)
-
-Any failure here caps the total at 60. There are no failures.
-
-| # | Row | State | Evidence |
-| --- | --- | --- | --- |
-| D1 | All 79 original checks green | UNVERIFIABLE-HERE | The suite was not delivered. [UNREACHABLE.md](./UNREACHABLE.md) §3. |
-| D2 | A green suite on this build | PASS | 85 checks, 85 pass. |
-| D3 | Feature inventory unchanged or grown | PASS | 0 removals; +6 properties, +1 union, +2 modes. |
-| D4 | Detection quality ratio ≥ 1.30 | PASS | 5.938 (substitute corpus — [UNREACHABLE.md](./UNREACHABLE.md) §4). |
-| D5 | Worst score ≥ 1.06 | PASS | 3.023 worst scene × mode (substitute corpus, reinterpreted; §4). |
-| D6 | ≤ 4 of 72 points below random | PASS | 3 of 72 (substitute corpus). |
-| D7 | 41 px boxes at 390 px | PASS | 85.1 px. |
-| D8 | 7 px chip text at 390 px | PASS | 9.0 px. |
-| D9 | Clean CSS-template lint | PASS | 0 errors, 0 warnings. |
-| D10 | Clean typecheck | PASS | 0 errors. |
-| D11 | All 11 presets visibly distinct | UNVERIFIABLE-HERE | 11 presets exist, render, and differ in configuration; "visibly" requires screenshots. |
-
-**Section D: 9 PASS, 2 UNVERIFIABLE-HERE, 0 FAIL.**
-
----
-
-## Honesty gate
+## Section E — honesty gate
 
 | Check | State |
 | --- | --- |
-| Deterministic previews are never presented as browser evidence | PASS — every measurement in this repository names its instrument and its corpus. |
-| No inferred value is recorded as a pass | PASS — 21 rows are UNVERIFIABLE-HERE rather than inferred. |
-| No screenshot is committed that a browser did not produce | PASS — no screenshots are committed. |
-| No module is labelled as recovered v2.30–v2.35 work | PASS — none was written. [UNREACHABLE.md](./UNREACHABLE.md) §2. |
-| Substitute measurements are labelled as substitutes | PASS — D4–D6 name the corpus in every place they appear. |
+| No row scored PASS from inference | PASS — B and C hold at 19 UNVERIFIABLE-HERE. |
+| Every number in docs produced by a tool | PASS — instruments named per row; captures carry `capture-log.json`. |
+| No capability removed unflagged | PASS — inventory tool enforces mechanically. |
+| Unreachable preview stated plainly | PASS — twice, with verbatim errors, both instruments. |
+| Documentation corrected where measurement disproved it | PASS — iteration 10's wrong prediction and the D5-floor reinterpretation are both recorded. |
 
----
+## Stop condition (§8)
 
-## Completion criteria
-
-| Criterion | State |
-| --- | --- |
-| ≥ 95/100 with zero Section D failures | **NOT MET** — no score can be computed; Section D has zero failures. |
-| Two consecutive iterations with no new failures or findings | **NOT MET** — this is iteration 1 of the consolidated build, and it produced 5 findings. |
-| Every UNVERIFIABLE-HERE row listed with its exact reason and the steps to verify it | **MET** — 21 rows above, reasons in [UNREACHABLE.md](./UNREACHABLE.md). |
+1. ≥ 95/100 with zero D FAILs — **not evaluable**: 60 points structurally
+   unverifiable here; Section D has zero FAILs.
+2. Two consecutive clean iterations — **not met**: this milestone found and
+   fixed one defect (iteration 10).
+3. Every UNVERIFIABLE-HERE row listed with reason and unblock steps — **met**
+   ([UNREACHABLE.md](./UNREACHABLE.md)).

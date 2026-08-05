@@ -14,6 +14,18 @@ export interface GridPulseLabelTokenInput {
     scorePrecision: number
     timeFormat: GridPulseLabelTimeFormat
     timecodeFps: number
+    /** 1-based index of this point within the committed set. Feeds {index}. */
+    index?: number
+    /** Total committed points. Feeds {n}. */
+    total?: number
+    /** Normalized horizontal position, 0..1. Feeds {x}. */
+    nx?: number
+    /** Normalized vertical position, 0..1. Feeds {y}. */
+    ny?: number
+    /** Human-readable label. Defaults to the point id. Feeds {label}. */
+    label?: string
+    /** Estimated overlay frame rate. Feeds {fps}. */
+    fps?: number
 }
 
 const clampInteger = (value: number, minimum: number, maximum: number) =>
@@ -67,8 +79,9 @@ export const formatGridPulseLabelTime = ({
 
 export const fillGridPulseLabelTemplate = (input: GridPulseLabelTokenInput) => {
     const precision = clampInteger(input.scorePrecision, 0, 6)
+    const score = Math.min(1, Math.max(0, input.score))
     const values: Record<string, string> = {
-        score: Math.min(1, Math.max(0, input.score)).toFixed(precision),
+        score: score.toFixed(precision),
         id: input.id,
         coords: input.coords,
         time: formatGridPulseLabelTime({
@@ -79,9 +92,16 @@ export const fillGridPulseLabelTemplate = (input: GridPulseLabelTokenInput) => {
         }),
         zoom: `${input.zoom.toFixed(2)}×`,
         mode: input.mode,
+        pct: `${Math.round(score * 100)}%`,
+        index: String(clampInteger(input.index ?? 1, 1, 9999)),
+        n: String(clampInteger(input.total ?? 1, 1, 9999)),
+        x: (Number.isFinite(input.nx) ? Math.min(1, Math.max(0, input.nx as number)) : 0).toFixed(3),
+        y: (Number.isFinite(input.ny) ? Math.min(1, Math.max(0, input.ny as number)) : 0).toFixed(3),
+        label: input.label ?? input.id,
+        fps: String(clampInteger(input.fps ?? 0, 0, 999)),
     }
     return input.template.replace(
-        /\{(score|id|coords|time|zoom|mode)\}/g,
+        /\{(score|id|coords|time|zoom|mode|pct|index|n|x|y|label|fps)\}/g,
         (_, token: string) => values[token] ?? ""
     )
 }

@@ -1,5 +1,31 @@
 # Enhancements history
 
+## v3.0.0-rc.2 — Specimen integration and reference-scope closure
+
+- **SpecimenGridPulse-Pro-v2.8 lineage integrated**: the integrated Specimen
+  renderer (10 scenes, HUD, controls rail, finish layers), VisionFramework
+  (plugin phases, themes, inspection effects, performance monitor, timeline,
+  canvas capture controller), VisionSceneGraph (nearest/mst/mesh), 
+  RenderingPipeline (renderer profiles, coherent/fractal noise, temporal
+  buffer, lens/particle passes), MotionEngine (acquisition choreography,
+  springs, typed labels), GpuPostProcessor (WebGL2 + canvas2d fallback),
+  AdaptiveQuality, ExamplePlugins — plus its five deterministic suites.
+  Entry point now follows the v2.8 stable contract: Specimen default export,
+  engine as `GridPulseScan`.
+- **Reference-scope closure in the engine** (each with tests): thermal effect
+  (3 ramps), Floyd–Steinberg diffusion + 5 named dither palettes, 7 new label
+  tokens, chip uppercase + 0.085em tracking (plan-measured calibration),
+  effect target default → media (plan §4.4 documented finding), density to 80
+  points with a greedy tracker path, custom detector hook, and the 11 named
+  presets from the plan inventory (new implementations, labelled as such).
+- **Defect fixed (iteration 10)**: the demand-driven loop froze permanently at
+  overlay alpha 0 during the rescan blackout gap — found by browser
+  instrumentation, invisible in code review and in interactive use.
+- **Browser evidence**: 29 local Chromium captures, preset-distinctness
+  measurement, committed instruments (`tools/capture-local.mjs`,
+  `tools/measure-preset-distinctness.mjs`).
+
+
 ## v3.0.0-rc.1 — Canonical Consolidation
 
 The milestone's purpose was to rebuild **one** authoritative source tree and

@@ -1,108 +1,51 @@
 import { useMemo, useState } from "react"
-import GridPulseScan, {
-    GRID_PULSE_SCAN_DEFAULTS,
-    type GridPulseBoxLayout,
-    type GridPulseDetectionMode,
+import SpecimenGridPulse, {
+    GRID_PULSE_SCAN_PRESETS,
+    GridPulseScan,
+    SPECIMEN_GRID_PRESETS,
     type GridPulseEffect,
-    type GridPulseScanProps,
+    type GridPulseDetectionMode,
+    type GridPulseScanPreset,
+    type SpecimenGridPreset,
 } from "../GridPulseScanPro"
 
-const effects: GridPulseEffect[] = ["none", "bitmap", "pixelated", "code", "xray"]
+const effects: GridPulseEffect[] = ["none", "bitmap", "pixelated", "code", "xray", "thermal"]
 const modes: GridPulseDetectionMode[] = ["auto", "person", "detail"]
-const layouts: GridPulseBoxLayout[] = ["callout", "tracking"]
+
+type RendererChoice = "integrated" | "engine"
 
 /**
- * The eleven presets the parity programme requires to be visibly distinct.
- * They are the same set the screenshot harness emits, so what is reviewed here
- * and what is captured there cannot drift apart.
+ * Demo for the combined component.
+ *
+ * - "integrated" renders the default export: the Specimen + Grid Pulse
+ *   renderer with its ten scene presets, HUD, and controls rail.
+ * - "engine" renders the lower-level Grid Pulse engine with the parity
+ *   plan's eleven named presets.
  */
-const presets: Array<{ id: string; shows: string; props: Partial<GridPulseScanProps> }> = [
-    { id: "default", shows: "shipped defaults", props: {} },
-    {
-        id: "detail-xray",
-        shows: "Detail detection, X-Ray over the whole frame",
-        props: { detection: { mode: "detail" }, effect: { type: "xray", scope: "both" } },
-    },
-    {
-        id: "person-bitmap",
-        shows: "Person detection, ordered-dither Bitmap callouts",
-        props: { detection: { mode: "person" }, effect: { type: "bitmap", scope: "boxes" } },
-    },
-    {
-        id: "auto-pixelated",
-        shows: "Auto detection, Pixelated callouts",
-        props: { detection: { mode: "auto" }, effect: { type: "pixelated", scope: "boxes" } },
-    },
-    {
-        id: "code",
-        shows: "Code glyphs across the frame",
-        props: { effect: { type: "code", scope: "both" } },
-    },
-    {
-        id: "point-mesh",
-        shows: "chained point-to-point connections",
-        props: { connections: { topology: "both", pointTopology: "chain" } },
-    },
-    {
-        id: "hub-mesh",
-        shows: "hub connection topology",
-        props: { connections: { topology: "points", pointTopology: "hub" } },
-    },
-    {
-        id: "tracking-frames",
-        shows: "Specimen-style centred tracking frames",
-        props: { boxes: { layout: "tracking", trackingParallax: 18 } },
-    },
-    {
-        id: "grid-scan",
-        shows: "grid scan band, callouts hidden",
-        props: { boxes: { visible: false }, grid: { animation: "scan" } },
-    },
-    {
-        id: "adaptive-chrome",
-        shows: "regional adaptive chrome with halo",
-        props: {
-            theme: {
-                adaptiveChrome: true,
-                chromeSpatialMode: "regional",
-                chromeHalo: true,
-            },
-        },
-    },
-    {
-        id: "reduced-motion",
-        shows: "reduced-motion reveal",
-        props: { motion: { respectReducedMotion: true, reducedMotionReveal: "instant" } },
-    },
-]
-
 export default function App() {
-    const [presetId, setPresetId] = useState(presets[0].id)
-    const [effect, setEffect] = useState<GridPulseEffect>(GRID_PULSE_SCAN_DEFAULTS.effect.type)
-    const [mode, setMode] = useState<GridPulseDetectionMode>("detail")
-    const [layout, setLayout] = useState<GridPulseBoxLayout>(GRID_PULSE_SCAN_DEFAULTS.boxes.layout)
+    const [renderer, setRenderer] = useState<RendererChoice>("integrated")
+    const [specimenPreset, setSpecimenPreset] = useState<SpecimenGridPreset>("Feature Tracking")
+    const [enginePreset, setEnginePreset] = useState<GridPulseScanPreset | "">("")
+    const [effect, setEffect] = useState<GridPulseEffect>("none")
+    const [mode, setMode] = useState<GridPulseDetectionMode>("auto")
     const [override, setOverride] = useState(false)
 
-    const preset = presets.find(candidate => candidate.id === presetId) ?? presets[0]
-
-    // Manual controls layer on top of the preset, so a preset can be inspected
-    // as-shipped and then poked at without editing the preset table.
-    const props = useMemo<GridPulseScanProps>(() => {
-        const base: GridPulseScanProps = {
+    const engineProps = useMemo(
+        () => ({
             src: "/demo-flower.jpeg",
             alt: "Demonstration media for Grid Pulse Scan Pro",
             style: { width: "100%", height: "100%" },
-            interaction: { activation: "always", clickToRescan: true },
-            ...preset.props,
-        }
-        if (!override) return base
-        return {
-            ...base,
-            detection: { ...base.detection, mode },
-            effect: { ...base.effect, type: effect, scope: "both" },
-            boxes: { ...base.boxes, layout },
-        }
-    }, [preset, override, effect, mode, layout])
+            interaction: { activation: "always" as const, clickToRescan: true },
+            ...(enginePreset ? { preset: enginePreset } : {}),
+            ...(override
+                ? {
+                      detection: { mode },
+                      effect: { type: effect, scope: "media" as const },
+                  }
+                : {}),
+        }),
+        [enginePreset, override, mode, effect]
+    )
 
     return (
         <main className="page">
@@ -110,22 +53,54 @@ export default function App() {
                 <div>
                     <h1>Grid Pulse Scan Pro</h1>
                     <p>
-                        v3.0.0-rc.1 canonical build · showing <strong>{preset.id}</strong> —{" "}
-                        {preset.shows}
+                        v3.0 canonical build · {renderer === "integrated"
+                            ? `Specimen preset — ${specimenPreset}`
+                            : `engine preset — ${enginePreset || "defaults"}`}
                     </p>
                 </div>
 
                 <div className="controls">
                     <label>
-                        Preset
-                        <select value={presetId} onChange={event => setPresetId(event.target.value)}>
-                            {presets.map(candidate => (
-                                <option key={candidate.id} value={candidate.id}>
-                                    {candidate.id}
-                                </option>
-                            ))}
+                        Renderer
+                        <select
+                            value={renderer}
+                            onChange={event => setRenderer(event.target.value as RendererChoice)}
+                        >
+                            <option value="integrated">integrated (Specimen)</option>
+                            <option value="engine">engine (Grid Pulse)</option>
                         </select>
                     </label>
+
+                    {renderer === "integrated" ? (
+                        <label>
+                            Scene
+                            <select
+                                value={specimenPreset}
+                                onChange={event =>
+                                    setSpecimenPreset(event.target.value as SpecimenGridPreset)
+                                }
+                            >
+                                {SPECIMEN_GRID_PRESETS.map(name => (
+                                    <option key={name}>{name}</option>
+                                ))}
+                            </select>
+                        </label>
+                    ) : (
+                        <label>
+                            Preset
+                            <select
+                                value={enginePreset}
+                                onChange={event =>
+                                    setEnginePreset(event.target.value as GridPulseScanPreset | "")
+                                }
+                            >
+                                <option value="">defaults</option>
+                                {GRID_PULSE_SCAN_PRESETS.map(name => (
+                                    <option key={name}>{name}</option>
+                                ))}
+                            </select>
+                        </label>
+                    )}
 
                     <label className="toggle">
                         <input
@@ -163,24 +138,27 @@ export default function App() {
                             ))}
                         </select>
                     </label>
-
-                    <label>
-                        Box layout
-                        <select
-                            value={layout}
-                            disabled={!override}
-                            onChange={event => setLayout(event.target.value as GridPulseBoxLayout)}
-                        >
-                            {layouts.map(value => (
-                                <option key={value}>{value}</option>
-                            ))}
-                        </select>
-                    </label>
                 </div>
             </header>
 
             <section className="stage">
-                <GridPulseScan key={presetId} {...props} />
+                {renderer === "integrated" ? (
+                    <SpecimenGridPulse
+                        key={specimenPreset}
+                        src="/demo-flower.jpeg"
+                        alt="Demonstration media for Specimen Grid Pulse Pro"
+                        preset={specimenPreset}
+                        style={{ width: "100%", height: "100%" }}
+                        {...(override
+                            ? {
+                                  detection: { mode },
+                                  effect: { type: effect, scope: "media" as const },
+                              }
+                            : {})}
+                    />
+                ) : (
+                    <GridPulseScan key={enginePreset || "defaults"} {...engineProps} />
+                )}
             </section>
         </main>
     )

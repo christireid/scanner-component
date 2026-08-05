@@ -60,6 +60,7 @@ export const DEFAULT_DETECTION: GridPulseDetectionOptions = {
     clickSearchRadius: 0.28,
     seed: 7187,
     manualPoints: [],
+    customDetector: null,
     mobilePointLimit: 3,
 }
 
@@ -185,12 +186,13 @@ export const DEFAULT_LABELS: GridPulseLabelOptions = {
     paddingY: 3,
     offsetX: 5,
     offsetY: 5,
-    uppercase: false,
+    uppercase: true,
+    letterSpacing: 0.085,
 }
 
 export const DEFAULT_EFFECT: GridPulseEffectOptions = {
     type: "none",
-    scope: "boxes",
+    scope: "media",
     intensity: 1,
     tint: "#f4f4f4",
     background: "#030303",
@@ -204,6 +206,7 @@ export const DEFAULT_EFFECT: GridPulseEffectOptions = {
     bitmapScale: 3,
     bitmapThreshold: 0.52,
     bitmapMethod: "ordered",
+    bitmapPalette: "none",
     bitmapMatrix: "bayer4",
     bitmapLevels: 2,
     bitmapAnchor: "image",
@@ -226,6 +229,10 @@ export const DEFAULT_EFFECT: GridPulseEffectOptions = {
     xrayEdgeThreshold: 0.045,
     xrayGlow: 1,
     xrayPreserveDetail: 0,
+    thermalPalette: "ironbow",
+    thermalContrast: 1.3,
+    thermalBrightness: 1,
+    thermalGamma: 0.9,
     refreshRate: 12,
 }
 

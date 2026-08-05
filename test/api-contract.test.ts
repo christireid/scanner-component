@@ -213,10 +213,16 @@ test("nothing outside the entry point reaches into the implementation directory"
     }
 })
 
-test("the entry point re-exports the component and its defaults", () => {
+test("the entry point exports both renderers and their surfaces", () => {
     const entry = readFileSync(new URL("../src/GridPulseScanPro.tsx", import.meta.url), "utf8")
-    assert.match(entry, /export default GridPulseScan/)
+    // Default export is the integrated Specimen renderer (v2.8 stable entry
+    // contract); the Grid Pulse engine stays exported alongside it.
+    assert.match(entry, /export default SpecimenGridPulse/)
+    assert.match(entry, /export \{ default as GridPulseScan \}/)
     assert.match(entry, /GRID_PULSE_SCAN_DEFAULTS/)
+    assert.match(entry, /SPECIMEN_GRID_PRESETS/)
+    assert.match(entry, /GRID_PULSE_SCAN_PRESETS/)
     assert.match(entry, /GridPulseScanProps/)
     assert.match(entry, /GridPulseRenderBridge/)
+    assert.match(entry, /VisionPlugin/)
 })

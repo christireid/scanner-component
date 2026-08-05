@@ -14,32 +14,25 @@ width 1200, device scale factor 2, with the same media, and measure it.
 
 **Status:** BLOCKED — network egress denied.
 
-**Hosts attempted:**
+**Hosts attempted, both instruments:**
 
-| Host | Result |
-| --- | --- |
-| `www.framer.com` (marketplace listing for Grid Pulse Scan) | HTTP 403 at CONNECT |
-| `www.framer.com` (marketplace listing for Specimen) | HTTP 403 at CONNECT |
-| `gridpulse-scan-poncedeleonstudio.framer.website` | HTTP 403 at CONNECT |
-| `specimen.framer.website` | HTTP 403 at CONNECT |
+| Host | curl | Chromium (Playwright, 1200 px / DPR 2) |
+| --- | --- | --- |
+| `gridpulse-scan-poncedeleonstudio.framer.website` | 403 at CONNECT | `net::ERR_TUNNEL_CONNECTION_FAILED` |
+| `www.framer.com/...grid-pulse-scan/` | 403 at CONNECT | `net::ERR_TUNNEL_CONNECTION_FAILED` |
+| `specimen.framer.website` | 403 at CONNECT | `net::ERR_TUNNEL_CONNECTION_FAILED` |
+| `www.framer.com/...specimen/` | 403 at CONNECT | not retried |
+| `framerusercontent.com/assets/EprNzB0Gw5uu5rBnN59cK4VsnQ.mp4` (the demo media, §3.2E) | 403 at CONNECT | not retried |
 
-**Exact failure:**
+The full §3.1 checklist with verbatim output is in
+[`test/reference/UNREACHABLE.md`](../test/reference/UNREACHABLE.md). The failure
+is the egress proxy refusing the CONNECT tunnel — an organisation policy
+denial, not bot detection, TLS, or a client limitation. The proxy documentation
+states policy denials must be reported, not retried or circumvented.
 
-```
-$ curl -sS -o /dev/null -w "%{http_code}\n" https://gridpulse-scan-poncedeleonstudio.framer.website/
-curl: (56) CONNECT tunnel failed, response 403
-```
-
-This is not a transient network error, a TLS problem, or a bot-detection
-challenge that a different user agent would clear. Outbound HTTPS in this
-session runs through a policy-enforcing egress proxy, and a 403 at the CONNECT
-stage means the destination host is not on this session's allowlist. The
-proxy's own documentation states that such denials must be reported rather than
-retried or routed around, so no attempt was made to circumvent it.
-
-Web search reaches the open web through a different path and returned no
-indexed description of either component, so it is not a usable substitute
-either.
+A working local Chromium **is** available and is used to capture and measure
+our own build (`docs/captures/`, `tools/capture-local.mjs`); it simply cannot
+reach the reference.
 
 **Consequences:**
 
@@ -104,6 +97,24 @@ merged one at a time.
 
 ---
 
+## 2a. Plan artifacts still missing after the original plan arrived
+
+The original `PARITY-PLAN.md` was delivered on 2026-08-05 and is installed
+verbatim. Two things it references remain undelivered:
+
+- **`docs/KICKOFF.md`** (deliverable 2 of 2).
+- **The §10 repository** it maps: `src/GridPulseScanPro.tsx` at ~5 000 lines
+  with zero deps, six suites / 79 checks, `test/score.py`, `test/measure.js`,
+  `test/lintcss.js`, `tools/serve.js`, the presets source, and the
+  `docs/ENHANCEMENTS.md` backlog of rejected approaches. What WAS delivered is
+  `SpecimenGridPulse-Pro-v2.8` — a different, older lineage (its own log says
+  the same: "the local package is not the full repository described by
+  PARITY-PLAN.md"). Its eight framework modules and five suites are now
+  integrated; the §10 repository's roles are re-implemented here
+  (`tools/quality-floor.mjs` for `score.py`, `tools/lint-css-templates.mjs`
+  for `lintcss.js`, `tools/serve.mjs` for `serve.js`, and new implementations
+  of the eleven named presets, labelled as such in source).
+
 ## 3. The original 79-check test suite could not be run
 
 **Required by:** Section D — "all 79 checks green".
@@ -113,10 +124,12 @@ merged one at a time.
 The archive contains no `test/` directory and no test file of any kind. The 79
 checks cannot be run, and their pass/fail state on this build is unknown.
 
-A new suite was written in its place: 85 checks across 5 files, all passing
-(see [BASELINE.md](./BASELINE.md)). **These are not the 79 checks.** They were
-authored against this source and cannot be assumed to cover the same
-behaviours. The count being larger means nothing about coverage overlap.
+A new suite was written in its place — now 110 checks across 12 files, all
+passing, including the five deterministic suites ported from the
+`SpecimenGridPulse-Pro-v2.8` package (see [BASELINE.md](./BASELINE.md)).
+**These are not the 79 checks.** They were authored against this source and
+cannot be assumed to cover the same behaviours. The count being larger means
+nothing about coverage overlap.
 
 **To resolve:** supply the original suite. It can be added alongside the new
 one without conflict.
@@ -155,18 +168,20 @@ the "points below random" floor.
 
 ---
 
-## 5. No screenshots exist in this repository
+## 5. Side-by-side comparison images cannot include the reference half
 
 **Required by:** the final package — side-by-side images at 390, 768, 1440,
 and 2560 px.
 
-**Status:** BLOCKED for the reference side; NOT DONE for our side.
+**Status:** OUR side DONE; the reference side remains BLOCKED by item 1.
 
-`tools/build-harness.mjs` generates 55 harness pages (11 presets × 5 viewports,
-including the 1200 px measurement width) with fixed viewport, fixed device
-scale factor, and interaction disabled. It deliberately does not capture
-anything: capture requires a browser, and any image committed here without one
-would be fabricated.
+`tools/build-harness.mjs` generates 145 fixed-viewport harness pages (29
+presets × 5 viewports including the 1200 px measurement width), and
+`tools/capture-local.mjs` drives them through the local Chromium:
+`docs/captures/` holds 29 real screenshots — the default at all four plan
+widths, all 11 named presets, thermal and diffusion effects, and all 10
+Specimen scenes — plus `capture-log.json` and `preset-distinctness.json`.
+Every committed image was produced by a browser; none is fabricated.
 
-**To resolve:** run the harness pages through a browser capture step. The
-reference half of each pair additionally requires item 1 to be resolved first.
+**To resolve fully:** capture the reference under item 1's conditions and pair
+the images.

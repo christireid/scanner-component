@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react"
+import type { GridPulseScanPreset } from "./GridPulsePresets"
 import type { GridPulseConnectionAnimation } from "./ConnectionAnimationPolicy"
 import type { GridPulseBoxAnimation } from "./ScanBoxAnimationPolicy"
 import type { GridPulseCrosshairFollowMode } from "./CrosshairMotionPolicy"
@@ -10,6 +11,8 @@ import type { ScanSweepDirection, ScanSweepEasing, ScanSweepMode } from "./ScanS
 import type { GridPulseTouchBehavior } from "./TouchInteractionPolicy"
 import type { GridPulseRescanTransition } from "./RescanTransitionPolicy"
 import type { BitmapAnchor, BitmapDotShape, BitmapMatrix, BitmapMethod } from "./BitmapEffectPolicy"
+import type { BitmapPaletteName } from "./DitherPalettePolicy"
+import type { ThermalPalette } from "./ThermalEffectPolicy"
 import type { PixelAnchorMode, PixelSamplingMode, PixelShape } from "./PixelatedEffectPolicy"
 import type { CodeAnchorMode, CodeColorMode, CodeSamplingMode } from "./CodeEffectPolicy"
 
@@ -34,7 +37,7 @@ export type GridPulseGridAnimation = "dash" | "drift" | "pulse" | "scan" | "hybr
 export type GridPulseGridScanDirection = "horizontal" | "vertical" | "diagonal"
 export type { GridPulseConnectionAnimation } from "./ConnectionAnimationPolicy"
 export type { GridPulseBoxAnimation } from "./ScanBoxAnimationPolicy"
-export type GridPulseEffect = "none" | "bitmap" | "pixelated" | "code" | "xray"
+export type GridPulseEffect = "none" | "bitmap" | "pixelated" | "code" | "xray" | "thermal"
 export type GridPulseEffectScope = "boxes" | "media" | "both"
 export type GridPulseAspectRatio =
     | "free"
@@ -115,6 +118,22 @@ export interface GridPulseDetectionOptions {
     clickSearchRadius: number
     seed: number
     manualPoints: GridPulsePoint[]
+    /**
+     * Optional detector hook. When provided it replaces the built-in saliency
+     * scan: it receives the decoded media canvas and must return normalized
+     * points. Exceptions and rejections fall back to the built-in detector.
+     * Note: the hook participates in options identity by presence, not by
+     * function identity — swap `mode` or another field to force a re-scan.
+     */
+    customDetector:
+        | ((context: {
+              canvas: HTMLCanvasElement
+              width: number
+              height: number
+              count: number
+              focus: GridPulsePoint | null
+          }) => GridPulsePoint[] | Promise<GridPulsePoint[]>)
+        | null
     mobilePointLimit: number
 }
 
@@ -270,6 +289,8 @@ export interface GridPulseLabelOptions {
     offsetX: number
     offsetY: number
     uppercase: boolean
+    /** Letter tracking in em. The measured chip calibration is 0.085em. */
+    letterSpacing: number
 }
 
 export interface GridPulseEffectOptions {
@@ -294,6 +315,8 @@ export interface GridPulseEffectOptions {
     bitmapScale: number
     bitmapThreshold: number
     bitmapMethod: BitmapMethod
+    /** Named dither palette applied by the ordered and diffusion methods. */
+    bitmapPalette: BitmapPaletteName
     bitmapMatrix: BitmapMatrix
     bitmapLevels: number
     bitmapAnchor: BitmapAnchor
@@ -328,6 +351,12 @@ export interface GridPulseEffectOptions {
     xrayGlow: number
     /** Amount of original source luminance retained after inversion. */
     xrayPreserveDetail: number
+    /** False-colour ramp used by the Thermal effect. */
+    thermalPalette: ThermalPalette
+    thermalContrast: number
+    thermalBrightness: number
+    /** Tone curve applied before the thermal ramp lookup. */
+    thermalGamma: number
     /** Limits expensive video effect refreshes while preserving 60fps overlay motion. */
     refreshRate: number
 }
@@ -480,6 +509,11 @@ export interface GridPulseRenderBridge {
 
 export interface GridPulseScanProps {
     src: string
+    /**
+     * Named configuration bundle applied beneath per-group overrides.
+     * See GridPulsePresets.ts — a caller's explicit option always wins.
+     */
+    preset?: GridPulseScanPreset
     alt?: string
     aspectRatio?: GridPulseAspectRatio
     media?: Partial<GridPulseMediaOptions>

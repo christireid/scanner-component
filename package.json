@@ -1,7 +1,7 @@
 {
   "name": "grid-pulse-scan-pro",
   "private": true,
-  "version": "3.0.0-rc.1",
+  "version": "3.0.0-rc.2",
   "type": "module",
   "description": "Grid Pulse Scan Pro — canonical consolidated source tree.",
   "main": "src/GridPulseScanPro.tsx",

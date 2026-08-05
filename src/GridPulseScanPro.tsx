@@ -6,11 +6,31 @@
  * reach into that directory directly. Adding a policy module means re-exporting
  * its public surface here, so the shipped API always has exactly one definition.
  */
-import GridPulseScan from "./grid-pulse/GridPulseScan"
+import SpecimenGridPulse from "./grid-pulse/SpecimenGridPulse"
 
-export default GridPulseScan
-export { GridPulseScan }
-export { GridPulseScan as GridPulseScanPro }
+/**
+ * Default export: the integrated Specimen + Grid Pulse renderer, matching the
+ * v2.8 stable entry contract — `composition: "grid-pulse"` renders the plain
+ * Grid Pulse engine, `"specimen"` the Specimen overlay alone, `"integrated"`
+ * (default) both. The lower-level engine stays available as `GridPulseScan`.
+ */
+export default SpecimenGridPulse
+export { SpecimenGridPulse }
+export { SpecimenGridPulse as GridPulseScanPro }
+export { default as GridPulseScan } from "./grid-pulse/GridPulseScan"
+
+export {
+    SPECIMEN_GRID_PRESETS,
+    SPECIMEN_GRID_PULSE_DEFAULTS,
+} from "./grid-pulse/SpecimenGridPulse"
+export type {
+    SpecimenGridPulseProps,
+    SpecimenGridOptions,
+    SpecimenGridPreset,
+    SpecimenGridFinish,
+    SpecimenGridComposition,
+    SpecimenGridInteraction,
+} from "./grid-pulse/SpecimenGridPulse"
 
 export { GRID_PULSE_SCAN_DEFAULTS } from "./grid-pulse/GridPulseScan"
 export { parseBoxShadow } from "./grid-pulse/BoxShadowPolicy"
@@ -220,3 +240,69 @@ export type {
 
 export { resolveGridPulseXraySample } from "./grid-pulse/XrayEffectPolicy"
 export type { GridPulseXraySampleInput } from "./grid-pulse/XrayEffectPolicy"
+
+export { resolveGridPulseThermalSample } from "./grid-pulse/ThermalEffectPolicy"
+export type { ThermalPalette, GridPulseThermalSampleInput } from "./grid-pulse/ThermalEffectPolicy"
+
+export {
+    BITMAP_PALETTES,
+    diffuseToPalette,
+    nearestPaletteIndex,
+    resolveBitmapPalette,
+} from "./grid-pulse/DitherPalettePolicy"
+export type { BitmapPaletteName, PaletteColor } from "./grid-pulse/DitherPalettePolicy"
+
+export {
+    GRID_PULSE_SCAN_PRESETS,
+    resolveGridPulsePreset,
+} from "./grid-pulse/GridPulsePresets"
+export type { GridPulseScanPreset, GridPulsePresetBundle } from "./grid-pulse/GridPulsePresets"
+
+/* Vision framework surface (from the SpecimenGridPulse-Pro lineage). */
+export {
+    InspectionEffectStack,
+    SCIENTIFIC_VISION_THEME,
+    VisionPerformanceMonitor,
+    VisionTimeline,
+    createCanvasCaptureController,
+} from "./grid-pulse/VisionFramework"
+export type {
+    InspectionEffect,
+    InspectionEffectName,
+    VisionCaptureController,
+    VisionPerformanceMetrics,
+    VisionPlugin,
+    VisionPluginContext,
+    VisionTheme,
+} from "./grid-pulse/VisionFramework"
+export { VisionSceneGraphStore } from "./grid-pulse/VisionSceneGraph"
+export type {
+    VisionGraphMode,
+    VisionSceneGraph,
+    VisionSceneNode,
+    VisionSceneEdge,
+} from "./grid-pulse/VisionSceneGraph"
+export {
+    RENDERER_PROFILES,
+    RenderingPipeline,
+    TemporalFrameBuffer,
+    coherentNoise2D,
+    fractalNoise2D,
+} from "./grid-pulse/RenderingPipeline"
+export type { PipelineOptions, RendererProfileName } from "./grid-pulse/RenderingPipeline"
+export {
+    DEFAULT_ACQUISITION_SPRING,
+    acquisitionMotion,
+    springStep,
+    typedLabel,
+} from "./grid-pulse/MotionEngine"
+export type { AcquisitionMotion, AcquisitionState, SpringConfig } from "./grid-pulse/MotionEngine"
+export { GpuPostProcessor, resolveGpuBackend } from "./grid-pulse/GpuPostProcessor"
+export type { GpuBackendPreference, GpuCapability } from "./grid-pulse/GpuPostProcessor"
+export {
+    degradeQuality,
+    resolveVisionQuality,
+    shouldDegradeQuality,
+} from "./grid-pulse/AdaptiveQuality"
+export type { QualityProfile, VisionQualityMode } from "./grid-pulse/AdaptiveQuality"
+export { confidenceHaloPlugin, effectDiagnosticPlugin } from "./grid-pulse/ExamplePlugins"

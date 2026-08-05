@@ -263,3 +263,157 @@ it back.
 | Original 79-check suite | Not delivered. §3. |
 | Reference-comparable quality numbers | Corpus not delivered. §4. |
 | Side-by-side screenshots | Requires a browser and, for the reference half, §1. §5. |
+
+
+---
+
+## Milestone v3.0.0-rc.2 — Specimen integration, reference-scope closure, first browser evidence
+
+Inputs that unblocked this milestone: the original `PARITY-PLAN.md` (installed
+verbatim at [PARITY-PLAN.md](./PARITY-PLAN.md)) and the `SpecimenGridPulse-Pro-v2.8`
+package. A working local Chromium also became available, which converts
+"deterministic preview" claims into browser measurements — for our side only;
+the reference remains unreachable (browser-level probe recorded in
+[UNREACHABLE.md](./UNREACHABLE.md)).
+
+---
+
+### Iteration 7 — Phase 0 capability probe, at browser level this time
+
+**Row:** §3.1 capability probe.
+
+**Prediction:** the egress denial observed via curl also holds for a real browser.
+
+**Measurement:** Playwright + Chromium 1194, viewport 1200 / DPR 2:
+`net::ERR_TUNNEL_CONNECTION_FAILED` on the live preview, both marketplace
+pages, and `framerusercontent.com` (the demo MP4). The failure is the proxy
+CONNECT stage — policy, not bot detection.
+
+**Prediction result:** correct.
+
+**Consequence:** B1–B10 and C1–C9 remain UNVERIFIABLE-HERE. The §3.2E warning
+applies in full: without the reference media, point-placement comparison would
+measure nothing even if screenshots existed.
+
+---
+
+### Iteration 8 — v2.8 Specimen lineage integrated without loss
+
+**Rows:** §1.1 superset rule; §5.1 inventory.
+
+The v2.8 package's eight framework modules (Specimen renderer, VisionFramework
+plugin system, VisionSceneGraph, RenderingPipeline, MotionEngine,
+GpuPostProcessor, AdaptiveQuality, ExamplePlugins) and its five deterministic
+suites now live in the canonical tree. Its `GridPulseConnectionTopology` was
+byte-identical to ours (shared ancestry); its stale local option literals were
+repointed at the canonical defaults. One strip-types incompatibility fixed
+(TS parameter property in `VisionTimeline`).
+
+`src/GridPulseScanPro.tsx` now follows the v2.8 stable-entry contract: the
+integrated Specimen renderer is the default export; the Grid Pulse engine
+stays exported as `GridPulseScan`. Inventory: 245 option properties (+7),
+83 exported values (+32), 116 exported types (+32), 0 removals.
+
+---
+
+### Iteration 9 — reference-scope and §4 closure in the engine
+
+**Rows:** §2.1 rows 2, 6, 9; §4.3; §4.4; §5.1 capabilities.
+
+Implemented, each with tests:
+
+- **Effect target default → `media`** (§4.4: "We now default to
+  `effectTarget="media"`" — a documented finding from user screenshots that an
+  early build had backwards). `effect.scope` default changed `boxes` → `media`.
+- **Chip calibration** (§4.3: "Ours is `.085em` uppercase" — tier-2 measured):
+  `labels.uppercase` default → true; new `labels.letterSpacing` option (em),
+  default 0.085, applied via canvas `letterSpacing`.
+- **All plan-listed tokens** (§2.1 row 6): `{pct} {index} {n} {x} {y} {label}
+  {fps}` added beside the reference four plus `{zoom} {mode}`.
+- **`thermal` effect** (§2.1 row 9 "plus thermal, none"): pure ramp policy
+  (ironbow / white-hot / rainbow), renderer, options, tests.
+- **Dither palettes + Floyd–Steinberg** (§5.1): `bitmapPalette`
+  duotone/mono4/handheld/amber/cmyk and `bitmapMethod: "diffusion"`; diffusion
+  verified to preserve mean luminance within 5% on flat grey.
+- **Density mode** (§5.1 "density mode to 80 points"): point ceiling 12 → 80;
+  tracker uses the exact solver ≤ 12 points and greedy nearest-first above
+  (the exact solver is exponential in points). 24-point assignment solves in
+  <250 ms with the obvious pairing; a 40-point field retains ≥ 38/40 identities
+  across a small displacement.
+- **Custom detector hook** (§5.1): `detection.customDetector` replaces the
+  built-in scan when supplied; exceptions fall back to built-in detection and
+  report through `onError`.
+- **Eleven named presets** (§5.1, D6): loupe, telemetry, plate, survey,
+  lattice, contour, hairline, swarm, field, viewfinder, tracking — as
+  configuration bundles over public options, merge order defaults ← preset ←
+  caller overrides. PROVENANCE: new implementations; the originals were never
+  delivered. `contour` drives the X-Ray edge pipeline and says so in source —
+  the original's marching-squares tracer was not delivered.
+
+Default NOT changed: `connections.topology` stays `leaders` — §4.2's
+point-to-point hypothesis is live but unverified, and v2.8's iteration 1 made
+the same call for the same reason.
+
+---
+
+### Iteration 10 — the demand-driven loop froze mid-rescan with the overlay cleared
+
+**Rows:** C7/C8 behaviour (and every browser capture downstream).
+
+**Prediction:** first local browser captures of the always-on default would
+show the full overlay.
+
+**Measurement:** they showed **no overlay at all**. Instrumented rAF and canvas
+calls: 6 rAF ticks total, 138 strokes, then silence; overlay canvas fully
+transparent; `data-grid-pulse-active="true"`.
+
+**Prediction result:** wrong — and the disproof localised the defect.
+
+**Diagnosis:** `overlayAnimated` — the term that keeps the demand-driven loop
+scheduling — was gated on `overlayAlpha > 0`. The initial scan starts a rescan
+transition whose fade passes through alpha 0 (end of exit + the 35 ms gap);
+the commit's wake-up frame landed inside the gap, saw alpha 0, declared
+nothing animated, and the loop stopped for good with the overlay cleared.
+Interactive use masks it (any pointer event revives the loop); headless and
+always-on-without-pointer exposed it. Pre-existing in the delivered v2.29.
+
+**Fix:** interaction and rescan transitions now keep the loop scheduling
+independently of overlay alpha.
+
+**Remeasurement:** 56 rAF in 1 s (≈60 fps), 3 132 strokes and climbing;
+overlay present in every subsequent capture.
+
+---
+
+### Iteration 11 — the images, not the code
+
+**Rows:** step 7.4; D6.
+
+Captured with the committed instruments (`tools/capture-local.mjs`,
+`tools/measure-preset-distinctness.mjs`): all 11 engine presets at 1200 px,
+the default at 390 / 768 / 1440 / 2560, thermal and diffusion effects, and all
+10 Specimen scenes — 29 captures, 0 page errors, in `docs/captures/`.
+
+D6 measurement: overlay-canvas alpha coverage per preset ranges 0.4 %
+(contour — its identity is the transformed media) to 29.9 % (tracking);
+pairwise tables in `docs/captures/preset-distinctness.json`. Whole-frame
+diffs are dominated by the shared photograph, so the verdict combines both
+metrics with visual inspection of the closest pairs. Four presets were tuned
+apart during measurement (distinct seeds and geometry for plate/hairline,
+lattice/swarm, survey/field). Every pair is structurally distinct in at least
+one instrument and visibly distinct on inspection.
+
+---
+
+### Iteration 12 — honesty items
+
+- The original plan is installed verbatim; the earlier reconstruction is
+  replaced. Its two still-missing artifacts (KICKOFF.md, the §10 repository)
+  are recorded in UNREACHABLE.md.
+- `docs/parity-score.json` regenerated with per-row states; no row is scored
+  PASS from inference.
+- The §5.3 floors keep their substitute-corpus caveat: the original
+  `test/score.py` corpus and `measure.js` were not delivered, so absolute
+  numbers are not comparable to the plan's table; ratios hold on our corpus
+  (5.938 ≥ 1.30, worst configuration 3.023 ≥ 1.06, 3/72 ≤ 4, 85.1 px ≥ 41,
+  9 px ≥ 7).
