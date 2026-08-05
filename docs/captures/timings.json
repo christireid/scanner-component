@@ -1,0 +1,71 @@
+{
+  "reveal": {
+    "configured": {
+      "revealDurationMs": 420,
+      "easedTo99AtMs": 330,
+      "staggerMs": 90
+    },
+    "measured": {
+      "pointsMeasured": 5,
+      "totalRevealMs": 699.9,
+      "perPointRevealTo99Ms": 333.3,
+      "meanStaggerMs": 95.8,
+      "staggersMs": [
+        99.9,
+        100.1,
+        83.3,
+        100
+      ]
+    }
+  },
+  "sweep": {
+    "configured": {
+      "periodMs": 1450,
+      "direction": "vertical",
+      "mode": "loop"
+    },
+    "measured": {
+      "wraps": 3,
+      "periodsMs": [
+        1466,
+        1433
+      ],
+      "meanPeriodMs": 1450
+    }
+  },
+  "crosshair": {
+    "configured": {
+      "followResponseMs": 95,
+      "note": "time to cover 99% of the gap"
+    },
+    "measured": {
+      "latencyMs": 92.7,
+      "remainingShare": 0.007847599703514563
+    }
+  },
+  "hoverOut": {
+    "configured": {
+      "leaveDelayMs": 90,
+      "exitDurationMs": 220
+    },
+    "measured": {
+      "deactivateMs": 102.6,
+      "overlayClearMs": 352.9
+    }
+  },
+  "chipContrast": {
+    "floor": 13.9,
+    "measured": {
+      "contrastRatio": 17.1
+    }
+  },
+  "resize": {
+    "measured": {
+      "width": 900,
+      "height": 600,
+      "points": 5,
+      "misprojected": 0
+    },
+    "pass": true
+  }
+}

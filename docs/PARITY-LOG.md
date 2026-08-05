@@ -498,3 +498,27 @@ in/out, keyboard, touch tap, mirror (profile-reversal check), the 16:9 and
 1:1 aspect ratios, and reduced-motion freezing all measured in the same run.
 A10's video half and A7 are now browser-verified on our side; B/C reference
 comparisons remain UNVERIFIABLE-HERE.
+
+
+---
+
+### Iteration 17 — our-side timing calibration measured; first clean iteration
+
+**Rows:** C1/C2/C4/C5/C6 (our half), §5.3 chip contrast, resize behaviour.
+
+Built `tools/measure-timings.mjs` and measured the running component against
+its own configuration in real Chromium
+([MEASURED-TIMINGS.md](./MEASURED-TIMINGS.md)): reveal 333.3 ms to the eased
+99% (predicted 330), stagger 95.8 ms vs 90 configured, sweep period 1450 ms
+vs 1450, crosshair 92.7 ms vs 95, hover-out 102.6 / 352.9 ms vs 90 / 310,
+chip contrast 17.1:1 against the 13.9:1 floor, and exact point re-projection
+on resize. Every quantity within one 60 Hz frame of configuration.
+
+Three first-pass probe results were instrument bugs, fixed and disclosed in
+the doc (already-revealed matched points, brightness-blind sweep detection,
+a resize that resized the viewport but not the fixed-width stage).
+
+**No new component defects were found. This is the first iteration of the
+consolidated build with zero new findings** — one of the two consecutive
+clean passes stop-condition §8.2 requires. The next iteration decides whether
+it was luck or convergence.

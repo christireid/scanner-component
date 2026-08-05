@@ -50,7 +50,10 @@ does not exist here.
 Same instrument gap as Section B. Our side of these behaviours is now
 browser-verified to *work* — hover in/out with leave delay, click-to-rescan
 with exact focus, keyboard, touch tap, reduced motion, ≈60 fps loop, video
-re-acquisition — but "the same as the reference" is unmeasurable here.
+re-acquisition — and our half of every timing row is **measured** and matches
+configuration within one frame ([MEASURED-TIMINGS.md](./MEASURED-TIMINGS.md):
+reveal 333 ms, stagger 96 ms, sweep 1450 ms, crosshair 93 ms, hover-out
+103/353 ms). "The same as the reference" remains unmeasurable here.
 
 | Rows | State |
 | --- | --- |
