@@ -271,3 +271,9 @@ test("chips are uppercase with 0.085em tracking (plan §4.3 measured calibration
 test("a custom detector hook slot ships in the detection options", () => {
     assert.equal(GRID_PULSE_SCAN_DEFAULTS.detection.customDetector, null)
 })
+
+test("adaptive chrome defaults on in cheap global mode (white-media legibility)", () => {
+    // docs/captures/media/lilies-default-before.jpg is why. Reverting is one flag.
+    assert.equal(GRID_PULSE_SCAN_DEFAULTS.theme.adaptiveChrome, true)
+    assert.equal(GRID_PULSE_SCAN_DEFAULTS.theme.chromeSpatialMode, "global")
+})

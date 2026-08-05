@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>media saponaria × swarm</title>
+<style>
+  html, body { margin: 0; background: #000; }
+  #stage { width: 1200px; height: 800px; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="stage" data-media="saponaria" data-scenario="swarm"></div>
+<script type="module">
+  import { createRoot } from "react-dom/client"
+  import { createElement } from "react"
+  import SpecimenGridPulse, { GridPulseScan } from "/src/GridPulseScanPro.tsx"
+
+  const props = {
+  "src": "/test-media/saponaria-magenta.jpeg",
+  "interaction": {
+    "activation": "always",
+    "clickToRescan": false,
+    "rescanOnEnter": false
+  },
+  "preset": "swarm"
+}
+  props.style = { width: "100%", height: "100%" }
+  const Component = GridPulseScan
+  createRoot(document.getElementById("stage")).render(createElement(Component, props))
+
+  window.__harnessReady = new Promise(resolve => {
+    const started = performance.now()
+    const check = () => {
+      const ready = document.querySelector("[data-grid-pulse-ready='true']")
+      if (ready || performance.now() - started > 20000) resolve(Boolean(ready))
+      else requestAnimationFrame(check)
+    }
+    requestAnimationFrame(check)
+  })
+</script>
+</body>
+</html>

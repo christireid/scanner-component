@@ -272,12 +272,16 @@ export const DEFAULT_THEME: GridPulseThemeOptions = {
     background: "#000000",
     overlayWhenInactive: false,
     inactiveOpacity: 0,
-    adaptiveChrome: false,
+    // Default ON since v3.0.0-rc.3: with it off, the white default chrome is
+    // near-invisible on light media — measured on a real white-background
+    // photo (docs/captures/media/lilies-default-before.jpg). Global mode keeps
+    // the per-frame cost of the default path low; regional stays opt-in.
+    adaptiveChrome: true,
     chromeLight: "#ffffff",
     chromeDark: "#050505",
     chromeSampleRadius: 9,
     chromeMinContrast: 4.5,
-    chromeSpatialMode: "regional",
+    chromeSpatialMode: "global",
     chromeZoneColumns: 3,
     chromeZoneRows: 3,
     chromeHalo: true,

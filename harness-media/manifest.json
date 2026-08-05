@@ -1,0 +1,245 @@
+{
+  "generatedBy": "tools/build-media-matrix.mjs",
+  "pages": [
+    {
+      "file": "dahlia-default.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "default"
+    },
+    {
+      "file": "dahlia-detail.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "detail"
+    },
+    {
+      "file": "dahlia-person.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "person"
+    },
+    {
+      "file": "dahlia-adaptive.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "adaptive"
+    },
+    {
+      "file": "dahlia-xray.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "xray"
+    },
+    {
+      "file": "dahlia-thermal.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "thermal"
+    },
+    {
+      "file": "dahlia-diffusion.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "diffusion"
+    },
+    {
+      "file": "dahlia-swarm.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "swarm"
+    },
+    {
+      "file": "dahlia-tracking.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "tracking"
+    },
+    {
+      "file": "dahlia-specimen.html",
+      "media": "dahlia",
+      "note": "high contrast on black",
+      "scenario": "specimen"
+    },
+    {
+      "file": "lilies-default.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "default"
+    },
+    {
+      "file": "lilies-detail.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "detail"
+    },
+    {
+      "file": "lilies-person.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "person"
+    },
+    {
+      "file": "lilies-adaptive.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "adaptive"
+    },
+    {
+      "file": "lilies-xray.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "xray"
+    },
+    {
+      "file": "lilies-thermal.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "thermal"
+    },
+    {
+      "file": "lilies-diffusion.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "diffusion"
+    },
+    {
+      "file": "lilies-swarm.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "swarm"
+    },
+    {
+      "file": "lilies-tracking.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "tracking"
+    },
+    {
+      "file": "lilies-specimen.html",
+      "media": "lilies",
+      "note": "translucent structures on white — chrome-contrast worst case",
+      "scenario": "specimen"
+    },
+    {
+      "file": "saponaria-default.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "default"
+    },
+    {
+      "file": "saponaria-detail.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "detail"
+    },
+    {
+      "file": "saponaria-person.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "person"
+    },
+    {
+      "file": "saponaria-adaptive.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "adaptive"
+    },
+    {
+      "file": "saponaria-xray.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "xray"
+    },
+    {
+      "file": "saponaria-thermal.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "thermal"
+    },
+    {
+      "file": "saponaria-diffusion.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "diffusion"
+    },
+    {
+      "file": "saponaria-swarm.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "swarm"
+    },
+    {
+      "file": "saponaria-tracking.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "tracking"
+    },
+    {
+      "file": "saponaria-specimen.html",
+      "media": "saponaria",
+      "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+      "scenario": "specimen"
+    },
+    {
+      "file": "helichrysum-default.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "default"
+    },
+    {
+      "file": "helichrysum-detail.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "detail"
+    },
+    {
+      "file": "helichrysum-person.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "person"
+    },
+    {
+      "file": "helichrysum-adaptive.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "adaptive"
+    },
+    {
+      "file": "helichrysum-xray.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "xray"
+    },
+    {
+      "file": "helichrysum-thermal.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "thermal"
+    },
+    {
+      "file": "helichrysum-diffusion.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "diffusion"
+    },
+    {
+      "file": "helichrysum-swarm.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "swarm"
+    },
+    {
+      "file": "helichrysum-tracking.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "tracking"
+    },
+    {
+      "file": "helichrysum-specimen.html",
+      "media": "helichrysum",
+      "note": "soft low-contrast blur, 6016px source",
+      "scenario": "specimen"
+    }
+  ]
+}

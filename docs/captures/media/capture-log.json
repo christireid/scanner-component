@@ -1,0 +1,402 @@
+[
+  {
+    "file": "dahlia-default.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "default",
+    "ready": true,
+    "readyMs": 362,
+    "rafPerSecond": 62,
+    "errors": []
+  },
+  {
+    "file": "dahlia-detail.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "detail",
+    "ready": true,
+    "readyMs": 492,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "dahlia-person.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "person",
+    "ready": true,
+    "readyMs": 478,
+    "rafPerSecond": 62,
+    "errors": []
+  },
+  {
+    "file": "dahlia-adaptive.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "adaptive",
+    "ready": true,
+    "readyMs": 481,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "dahlia-xray.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "xray",
+    "ready": true,
+    "readyMs": 518,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "dahlia-thermal.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "thermal",
+    "ready": true,
+    "readyMs": 650,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "dahlia-diffusion.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "diffusion",
+    "ready": true,
+    "readyMs": 312,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "dahlia-swarm.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "swarm",
+    "ready": true,
+    "readyMs": 471,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "dahlia-tracking.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "tracking",
+    "ready": true,
+    "readyMs": 466,
+    "rafPerSecond": 57,
+    "errors": []
+  },
+  {
+    "file": "dahlia-specimen.html",
+    "media": "dahlia",
+    "note": "high contrast on black",
+    "scenario": "specimen",
+    "ready": true,
+    "readyMs": 740,
+    "rafPerSecond": 6,
+    "errors": []
+  },
+  {
+    "file": "lilies-default.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "default",
+    "ready": true,
+    "readyMs": 504,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "lilies-detail.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "detail",
+    "ready": true,
+    "readyMs": 227,
+    "rafPerSecond": 59,
+    "errors": []
+  },
+  {
+    "file": "lilies-person.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "person",
+    "ready": true,
+    "readyMs": 465,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "lilies-adaptive.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "adaptive",
+    "ready": true,
+    "readyMs": 503,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "lilies-xray.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "xray",
+    "ready": true,
+    "readyMs": 225,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "lilies-thermal.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "thermal",
+    "ready": true,
+    "readyMs": 239,
+    "rafPerSecond": 62,
+    "errors": []
+  },
+  {
+    "file": "lilies-diffusion.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "diffusion",
+    "ready": true,
+    "readyMs": 569,
+    "rafPerSecond": 62,
+    "errors": []
+  },
+  {
+    "file": "lilies-swarm.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "swarm",
+    "ready": true,
+    "readyMs": 210,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "lilies-tracking.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "tracking",
+    "ready": true,
+    "readyMs": 490,
+    "rafPerSecond": 57,
+    "errors": []
+  },
+  {
+    "file": "lilies-specimen.html",
+    "media": "lilies",
+    "note": "translucent structures on white — chrome-contrast worst case",
+    "scenario": "specimen",
+    "ready": true,
+    "readyMs": 725,
+    "rafPerSecond": 7,
+    "errors": []
+  },
+  {
+    "file": "saponaria-default.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "default",
+    "ready": true,
+    "readyMs": 766,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "saponaria-detail.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "detail",
+    "ready": true,
+    "readyMs": 774,
+    "rafPerSecond": 60,
+    "errors": []
+  },
+  {
+    "file": "saponaria-person.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "person",
+    "ready": true,
+    "readyMs": 708,
+    "rafPerSecond": 62,
+    "errors": []
+  },
+  {
+    "file": "saponaria-adaptive.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "adaptive",
+    "ready": true,
+    "readyMs": 697,
+    "rafPerSecond": 38,
+    "errors": []
+  },
+  {
+    "file": "saponaria-xray.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "xray",
+    "ready": true,
+    "readyMs": 879,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "saponaria-thermal.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "thermal",
+    "ready": true,
+    "readyMs": 840,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "saponaria-diffusion.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "diffusion",
+    "ready": true,
+    "readyMs": 784,
+    "rafPerSecond": 62,
+    "errors": []
+  },
+  {
+    "file": "saponaria-swarm.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "swarm",
+    "ready": true,
+    "readyMs": 329,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "saponaria-tracking.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "tracking",
+    "ready": true,
+    "readyMs": 699,
+    "rafPerSecond": 50,
+    "errors": []
+  },
+  {
+    "file": "saponaria-specimen.html",
+    "media": "saponaria",
+    "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
+    "scenario": "specimen",
+    "ready": true,
+    "readyMs": 1089,
+    "rafPerSecond": 6,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-default.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "default",
+    "ready": true,
+    "readyMs": 218,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-detail.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "detail",
+    "ready": true,
+    "readyMs": 666,
+    "rafPerSecond": 62,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-person.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "person",
+    "ready": true,
+    "readyMs": 216,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-adaptive.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "adaptive",
+    "ready": true,
+    "readyMs": 222,
+    "rafPerSecond": 60,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-xray.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "xray",
+    "ready": true,
+    "readyMs": 301,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-thermal.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "thermal",
+    "ready": true,
+    "readyMs": 225,
+    "rafPerSecond": 32,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-diffusion.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "diffusion",
+    "ready": true,
+    "readyMs": 3084,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-swarm.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "swarm",
+    "ready": true,
+    "readyMs": 823,
+    "rafPerSecond": 61,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-tracking.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "tracking",
+    "ready": true,
+    "readyMs": 691,
+    "rafPerSecond": 55,
+    "errors": []
+  },
+  {
+    "file": "helichrysum-specimen.html",
+    "media": "helichrysum",
+    "note": "soft low-contrast blur, 6016px source",
+    "scenario": "specimen",
+    "ready": true,
+    "readyMs": 1217,
+    "rafPerSecond": 6,
+    "errors": []
+  }
+]

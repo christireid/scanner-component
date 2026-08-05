@@ -93,7 +93,7 @@ from this repository.**
 | Section A (scope) | **10 of 10 rows PASS** (A2/A3 carry a reference-default caveat) |
 | Section D (non-regression) | **5 PASS, 1 UNVERIFIABLE-HERE, 0 FAIL** |
 | Sections B and C (fidelity) | **19 rows, all UNVERIFIABLE-HERE** — the reference runtime and its demo media are blocked at the egress proxy, verified with a real Chromium (`net::ERR_TUNNEL_CONNECTION_FAILED`) |
-| Local browser evidence | **29 captures, 0 page errors**, in `docs/captures/` |
+| Local browser evidence | **69 captures, 0 page errors**, in `docs/captures/` — presets, effects, Specimen scenes, and a 4-photo × 10-scenario real-media matrix ([MEDIA-TESTS.md](./docs/MEDIA-TESTS.md)) |
 | Official parity score | **not established, and not estimated** |
 
 The reference runtime was never observed: `framer.com` and `*.framer.website`
@@ -122,7 +122,10 @@ source did not. Each is logged with its measurement in
    tones: a fixed tie-break jitter was 11.4% of that mode's compressed score
    range, against 2.5% for the others.
 5. The public target tracker did not clamp newly acquired points.
-6. **The demand-driven render loop froze permanently with a blank overlay** —
+6. **The shipped default was illegible on white media** — white chrome on a
+   white photograph. Found by testing user-supplied photos; fixed by defaulting
+   `adaptiveChrome` on (global mode), before/after captures committed.
+7. **The demand-driven render loop froze permanently with a blank overlay** —
    the rescan fade passes through alpha 0 and the loop's keep-alive condition
    was gated on `overlayAlpha > 0`. Invisible in code review and interactive
    use; found by instrumenting rAF counts in the local browser (6 frames, then

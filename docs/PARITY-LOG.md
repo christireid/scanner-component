@@ -417,3 +417,46 @@ one instrument and visibly distinct on inspection.
   numbers are not comparable to the plan's table; ratios hold on our corpus
   (5.938 ≥ 1.30, worst configuration 3.023 ≥ 1.06, 3/72 ≤ 4, 85.1 px ≥ 41,
   9 px ≥ 7).
+
+
+---
+
+### Iteration 13 — the shipped default was illegible on white media
+
+**Rows:** the §5.3 legibility spirit (chip contrast floor), B6 colour identity.
+
+**Prediction:** the default configuration renders legibly on a real
+white-background photograph.
+
+**Measurement:** it did not. On a user-supplied X-ray lily photo (white
+background), the default `adaptiveChrome: false` chrome — white grid, white
+leaders, white markers, white borders, white sweep — was functionally
+invisible. Kept as `docs/captures/media/lilies-default-before.jpg`. Chips
+survived on their dark backing.
+
+**Prediction result:** wrong; the photograph found it immediately.
+
+**Fix:** `theme.adaptiveChrome` default → `true` with
+`chromeSpatialMode: "global"` (single sampled contrast decision — the cheap
+path; `regional` stays opt-in). One-flag reversion.
+
+**Remeasurement:** dark chrome chosen on the white and pastel photos, light on
+the dark photo with correct per-point inversion on a bright petal; 58–61 rAF/s
+across all four defaults. Before/after captures committed. Recorded as a
+legibility-floor decision, not a parity claim — the reference's light-media
+behaviour is unobservable here.
+
+**Non-regression run:** typecheck clean, 110/110, lint clean, inventory 0
+removals, floors 5/5.
+
+---
+
+### Iteration 14 — real-media matrix
+
+Four user-supplied photographs stressing four failure classes (white
+background, skin-adjacent tones, low contrast at 23 MP, portrait aspect) ×
+10 scenarios: **40/40 rendered, 0 page errors**, engine at 50–62 rAF/s
+throughout, Person mode kept all points on structure on the skin-adjacent
+scene. Full report: [MEDIA-TESTS.md](./MEDIA-TESTS.md). Honest limitations
+recorded there: Specimen ≈6 rAF/s in GPU-less headless Chromium; 3.1 s first
+diffusion pass on the 23 MP source.
