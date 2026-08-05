@@ -569,3 +569,53 @@ scoring B1–B10 and C1–C9 — requires exactly one thing: reference captures 
 1200 px / DPR 2 (or network reach to take them). Our half of every comparison
 is already measured and committed
 ([MEASURED-TIMINGS.md](./MEASURED-TIMINGS.md), `docs/captures/`).
+
+
+---
+
+### Iteration 19 — the Specimen adaptive-quality system could not rescue a collapse
+
+**Row:** the honest limitation recorded in [MEDIA-TESTS.md](./MEDIA-TESTS.md)
+("Specimen ≈6 rAF/s in GPU-less headless Chromium; not tuned here") — now
+diagnosed instead of shelved.
+
+**Prediction:** the adaptive-quality system degrades tiers under sustained
+slow frames, so the 6 fps figure reflects a floor it cannot go below.
+
+**Measurement:** wrong on both counts. Instrumented 16 s with
+`onQualityChange`/`onPerformanceMetrics` wired: SwiftShader reports WebGL2 as
+*available*, so auto quality resolved to `balanced` (40 fps budget) and ran
+the GPU pass on software GL; average frames sat at **318–375 ms** (12–15×
+over budget) and the degradation loop fired **zero times** — it judged the
+*lifetime* average every 20 frames and needed 3 consecutive slow windows,
+i.e. 60 frames ≈ 15+ s at the frame rate it was meant to rescue.
+
+**Fixes (policy + probe, each tested):**
+
+1. `QualityEnvironment.softwareGl` — the WebGL2 renderer string is checked
+   for SwiftShader/llvmpipe at mount; software GL resolves auto quality
+   straight to `low`.
+2. `VisionPerformanceMonitor` gains a 20-frame windowed
+   `recentAverageFrameMs`; the degrade check judges it every 10 frames,
+   2 consecutive slow windows suffice, and an emergency overshoot
+   (> 4× budget) degrades immediately.
+
+**Remeasurement:** quality resolves to `low` at **t = 422 ms**; GPU backend
+steps aside to canvas2d; frame work drops **318 ms → 2.1–2.7 ms (~150×)**;
+the Specimen media scenarios run at **23–25 rAF/s against the low tier's
+24 fps budget** (previously 6). Real GPU-less and low-end hardware benefits
+from exactly these paths.
+
+**Non-regression run:** 111/111 (adaptive-quality suite extended for the new
+semantics), lint clean, inventory 0 removals, floors 5/5.
+
+---
+
+## Convergence statement — amended
+
+Iteration 19 produced a new finding, so the §8.2 pair from iterations 17–18
+no longer stands as the *latest* two iterations. Honest state: **one clean
+iteration is again required back-to-back with another.** The claim "everything
+measurable here is measured" survives; the claim "nothing new is being found"
+was two iterations old and iteration 19 disproved it — which is precisely why
+the plan demands two *consecutive* clean passes before stopping.

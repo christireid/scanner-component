@@ -1954,9 +1954,24 @@ export default function SpecimenGridPulse({
         const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)")
         const resolveEnvironment = () => {
             let webgl2Available = false
+            let softwareGl = false
             try {
                 const canvas = document.createElement("canvas")
-                webgl2Available = Boolean(canvas.getContext("webgl2"))
+                const gl = canvas.getContext("webgl2")
+                webgl2Available = Boolean(gl)
+                if (gl) {
+                    // SwiftShader / llvmpipe pass every capability probe while
+                    // running an order of magnitude slower than hardware.
+                    // Measured here: 318ms average frames on a "webgl2
+                    // available" machine. Treat software GL as no GPU.
+                    const debugInfo = gl.getExtension("WEBGL_debug_renderer_info")
+                    const renderer = String(
+                        debugInfo
+                            ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+                            : gl.getParameter(gl.RENDERER)
+                    )
+                    softwareGl = /swiftshader|llvmpipe|software|basic render/i.test(renderer)
+                }
             } catch {
                 webgl2Available = false
             }
@@ -1968,6 +1983,7 @@ export default function SpecimenGridPulse({
                 reducedMotion: Boolean(mediaQuery?.matches),
                 compact: root.clientWidth < 720,
                 webgl2Available,
+                softwareGl,
             }
             qualityEnvironmentRef.current = environment
             slowQualitySamplesRef.current = 0
@@ -2403,15 +2419,18 @@ export default function SpecimenGridPulse({
             }
             const frameDuration = performance.now() - frameStartedAt
             const metrics = performanceMonitorRef.current.record(frameDuration, interval)
-            if (metrics.frameCount % 20 === 0) {
+            // Every 10 frames, judged on the recent window rather than the
+            // lifetime average: a collapse to 4fps was taking 60 frames
+            // (15+ seconds) to trigger the first degradation.
+            if (metrics.frameCount % 10 === 0) {
                 onPerformanceMetrics?.(metrics)
-                if (quality === "auto") {
+                if (quality === "auto" && qualityProfile.tier !== "low") {
                     const frameBudget = 1000 / Math.max(1, qualityProfile.overlayFps)
-                    slowQualitySamplesRef.current = metrics.averageFrameMs > frameBudget * 1.35
+                    slowQualitySamplesRef.current = metrics.recentAverageFrameMs > frameBudget * 1.35
                         ? slowQualitySamplesRef.current + 1
                         : 0
                     if (shouldDegradeQuality(
-                        metrics.averageFrameMs,
+                        metrics.recentAverageFrameMs,
                         slowQualitySamplesRef.current,
                         qualityProfile.overlayFps
                     )) {

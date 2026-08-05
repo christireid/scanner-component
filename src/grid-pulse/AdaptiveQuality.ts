@@ -8,6 +8,13 @@ export interface QualityEnvironment {
     reducedMotion: boolean
     compact: boolean
     webgl2Available: boolean
+    /**
+     * True when the WebGL2 context is software-rendered (SwiftShader,
+     * llvmpipe). Software GL passes capability probes while performing an
+     * order of magnitude worse than hardware; auto quality must treat it as
+     * no GPU at all.
+     */
+    softwareGl?: boolean
 }
 
 export interface QualityProfile {
@@ -36,7 +43,7 @@ export function resolveVisionQuality(
     if (environment.reducedMotion) return PROFILES.low
     const memory = environment.deviceMemory ?? 4
     const cores = environment.hardwareConcurrency ?? 4
-    if (!environment.webgl2Available || memory <= 2 || cores <= 2) return PROFILES.low
+    if (!environment.webgl2Available || environment.softwareGl || memory <= 2 || cores <= 2) return PROFILES.low
     if (environment.compact || memory <= 4 || cores <= 4 || environment.devicePixelRatio > 2.5) return PROFILES.balanced
     if (memory >= 8 && cores >= 8 && environment.devicePixelRatio <= 2) return PROFILES.ultra
     return PROFILES.high
@@ -54,5 +61,10 @@ export function shouldDegradeQuality(
     targetFps: number
 ) {
     const budget = 1000 / Math.max(1, targetFps)
-    return consecutiveSlowSamples >= 3 && averageFrameMs > budget * 1.35
+    // Emergency path: a frame time several multiples over budget must not wait
+    // for the consecutive-sample ritual. Measured need: software-GL WebGL2
+    // (SwiftShader) ran 12-15x over budget and the old 3-sample rule took
+    // 60 frames — 15+ seconds at the frame rate it was supposed to rescue.
+    if (averageFrameMs > budget * 4) return true
+    return consecutiveSlowSamples >= 2 && averageFrameMs > budget * 1.35
 }

@@ -150,6 +150,8 @@ export class InspectionEffectStack {
 export interface VisionPerformanceMetrics {
     frameCount: number
     averageFrameMs: number
+    /** Mean of the most recent 20 frames — the signal adaptive quality reacts to. */
+    recentAverageFrameMs: number
     lastFrameMs: number
     maxFrameMs: number
     droppedFrames: number
@@ -162,25 +164,35 @@ export class VisionPerformanceMonitor {
     private lastFrameMs = 0
     private maxFrameMs = 0
     private droppedFrames = 0
+    // Lifetime averages respond too slowly for quality control: early fast
+    // frames dilute a later collapse. A short window tracks what the renderer
+    // is doing NOW.
+    private recent: number[] = []
 
     record(frameMs: number, targetFrameMs: number): VisionPerformanceMetrics {
         this.frameCount += 1
         this.totalFrameMs += frameMs
         this.lastFrameMs = frameMs
         this.maxFrameMs = Math.max(this.maxFrameMs, frameMs)
+        this.recent.push(frameMs)
+        if (this.recent.length > 20) this.recent.shift()
         if (frameMs > targetFrameMs * 1.5) this.droppedFrames += 1
         return this.snapshot()
     }
 
     snapshot(): VisionPerformanceMetrics {
         const averageFrameMs = this.frameCount ? this.totalFrameMs / this.frameCount : 0
+        const recentAverageFrameMs = this.recent.length
+            ? this.recent.reduce((sum, value) => sum + value, 0) / this.recent.length
+            : 0
         return {
             frameCount: this.frameCount,
             averageFrameMs,
+            recentAverageFrameMs,
             lastFrameMs: this.lastFrameMs,
             maxFrameMs: this.maxFrameMs,
             droppedFrames: this.droppedFrames,
-            estimatedFps: averageFrameMs > 0 ? 1000 / averageFrameMs : 0,
+            estimatedFps: recentAverageFrameMs > 0 ? 1000 / recentAverageFrameMs : 0,
         }
     }
 }

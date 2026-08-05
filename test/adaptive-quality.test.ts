@@ -16,6 +16,21 @@ test("adaptive-quality suite (ported from SpecimenGridPulse-Pro-v2.8)", () => {
     assert(degradeQuality("balanced") === "low", "balanced should degrade to low")
     assert(shouldDegradeQuality(30, 3, 50), "sustained slow frames should degrade")
     assert(!shouldDegradeQuality(18, 3, 50), "frames within budget should not degrade")
+    assert(shouldDegradeQuality(30, 2, 50), "two slow windows now suffice")
+    assert(!shouldDegradeQuality(30, 1, 50), "one slow window alone does not degrade")
+    assert(shouldDegradeQuality(120, 0, 50), "an emergency overshoot (>4x budget) degrades immediately")
+    assert(
+        resolveVisionQuality("auto", {
+            devicePixelRatio: 2,
+            deviceMemory: 16,
+            hardwareConcurrency: 16,
+            reducedMotion: false,
+            compact: false,
+            webgl2Available: true,
+            softwareGl: true,
+        }).tier === "low",
+        "software GL resolves auto quality to low"
+    )
     console.log("adaptive quality tests passed")
 
 })

@@ -95,7 +95,7 @@ from this repository.**
 | Sections B and C (fidelity) | **19 rows, all UNVERIFIABLE-HERE** — the reference runtime and its demo media are blocked at the egress proxy, verified with a real Chromium (`net::ERR_TUNNEL_CONNECTION_FAILED`) |
 | Local browser evidence | **69 captures, 0 page errors**, in `docs/captures/` — presets, effects, Specimen scenes, and a 4-photo × 10-scenario real-media matrix ([MEDIA-TESTS.md](./docs/MEDIA-TESTS.md)) |
 | Official parity score | **not established, and not estimated** |
-| Convergence (§8.2) | **met** — iterations 17 and 18 were consecutive zero-finding passes; everything measurable here is measured |
+| Convergence (§8.2) | **reset by iteration 19** — the Specimen adaptive-quality diagnosis (fixed, ~150× frame-time improvement); everything measurable here remains measured |
 
 The reference runtime was never observed: `framer.com` and `*.framer.website`
 are denied by this environment's egress policy, returning HTTP 403 at CONNECT.

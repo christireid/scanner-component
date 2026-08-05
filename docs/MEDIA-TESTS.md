@@ -54,10 +54,12 @@ justified by our legibility floor, not by claimed parity.
 
 ## Honest limitations recorded
 
-- **Specimen renderer in headless Chromium: ~6 rAF/s.** `headless_shell` has
-  no GPU; the WebGL2 path cannot initialise and the CPU fallback carries the
-  full lens/noise/persistence stack. Not representative of GPU-backed
-  browsers; not tuned here. The engine path is unaffected (50–62 rAF/s).
+- **Specimen renderer in headless Chromium** — originally recorded here as
+  "~6 rAF/s, not tuned". Superseded by parity-log iteration 19: the real
+  cause was SwiftShader passing the WebGL2 capability probe while running the
+  GPU pass in software, plus a degradation loop too slow to react. After
+  software-GL detection and windowed degradation, the same scenarios run at
+  23–25 rAF/s against the low tier's 24 fps budget.
 - **First diffusion pass on the 23 MP source took 3.1 s** to first ready;
   subsequent refreshes are throttled. Large-source diffusion cost scales with
   the bitmap grid, not the source, so `bitmapScale` is the lever.
