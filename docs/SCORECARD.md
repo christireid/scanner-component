@@ -86,7 +86,8 @@ reveal 333 ms, stagger 96 ms, sweep 1450 ms, crosshair 93 ms, hover-out
 
 1. ≥ 95/100 with zero D FAILs — **not evaluable**: 60 points structurally
    unverifiable here; Section D has zero FAILs.
-2. Two consecutive clean iterations — **not met**: this milestone found and
-   fixed one defect (iteration 10).
+2. Two consecutive clean iterations — **met**: iterations 17 and 18 produced
+   no new failures and no new findings (see the parity log's convergence
+   statement).
 3. Every UNVERIFIABLE-HERE row listed with reason and unblock steps — **met**
    ([UNREACHABLE.md](./UNREACHABLE.md)).

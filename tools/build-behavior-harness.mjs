@@ -33,12 +33,13 @@ const page = `<!doctype html>
 <script type="module">
   import { createRoot } from "react-dom/client"
   import { createElement } from "react"
-  import { GridPulseScan } from "/src/GridPulseScanPro.tsx"
+  import SpecimenGridPulse, { GridPulseScan } from "/src/GridPulseScanPro.tsx"
 
   const params = new URLSearchParams(location.search)
   window.__scans = []
   window.__activeLog = []
   window.__bridge = null
+  window.__errors = []
 
   // height:100% would defeat the CSS aspect-ratio the component sets, so it
   // is only applied for the free ratio.
@@ -47,18 +48,33 @@ const page = `<!doctype html>
     src: params.get("src") || "/demo-flower.jpeg",
     style: aspect === "free" ? { width: "100%", height: "100%" } : { width: "100%" },
     aspectRatio: aspect,
-    media: { mirror: params.get("mirror") === "1" },
+    media: {
+      mirror: params.get("mirror") === "1",
+      // cors=0 loads media without crossOrigin, letting a cross-origin image
+      // taint the canvas — the graceful-degradation path under test.
+      crossOrigin: params.get("cors") === "0" ? null : "anonymous",
+    },
     detection: { mode: params.get("mode") || "auto" },
     interaction: {
       activation: params.get("activation") || "hover",
       clickToRescan: true,
       autoRescanInterval: Number(params.get("autoRescan") || 0),
     },
+    ...(params.get("effect") ? { effect: { type: params.get("effect"), scope: "media" } } : {}),
     onScan: points => window.__scans.push(points.map(p => ({ ...p }))),
+    onError: error => window.__errors.push(String(error && error.message || error)),
     onActiveChange: active => window.__activeLog.push({ active, at: performance.now() }),
     onRenderBridge: bridge => { window.__bridge = bridge },
   }
-  createRoot(document.getElementById("stage")).render(createElement(GridPulseScan, props))
+  // composition=<mode> renders the integrated Specimen renderer instead of
+  // the bare engine, for composition-mode checks.
+  const composition = params.get("composition")
+  const Component = composition ? SpecimenGridPulse : GridPulseScan
+  if (composition) props.specimen = { showControls: false, composition }
+  const root = createRoot(document.getElementById("stage"))
+  window.__root = root
+  window.__setProps = next => root.render(createElement(Component, { ...props, ...next }))
+  root.render(createElement(Component, props))
 
   window.__ready = new Promise(resolve => {
     const started = performance.now()

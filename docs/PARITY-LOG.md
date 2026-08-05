@@ -522,3 +522,50 @@ a resize that resized the viewport but not the fixed-width stage).
 consolidated build with zero new findings** — one of the two consecutive
 clean passes stop-condition §8.2 requires. The next iteration decides whether
 it was luck or convergence.
+
+
+---
+
+### Iteration 18 — hardening sweep; second consecutive clean iteration
+
+**Rows:** graceful degradation (the honesty behind A9/A10), lifecycle safety,
+Specimen composition modes.
+
+`tools/hardening-tests.mjs`, 7 browser checks, all passing
+(`docs/captures/hardening-log.json`):
+
+- a 404 src reports through `onError`, stays un-ready, never crashes;
+- cross-origin **tainted** media (served from a second local origin with no
+  CORS headers) still renders, detection falls back to the centre point, and
+  the X-Ray effect disables itself through `onError` with the taint message
+  rather than throwing;
+- swapping `src` mid-scan commits cleanly under the generation guard;
+- unmounting during an in-flight scan leaves zero page errors;
+- `dprCap: 2` bounds a DPR-3 display to exactly a 2× backing store;
+- the three Specimen composition modes render measurably distinctly
+  (integrated↔grid-pulse 41.8, integrated↔specimen 7.3,
+  grid-pulse↔specimen 43.4 mean-abs-gray).
+
+The 12-check behaviour suite re-ran green after the harness gained
+composition support. **No new component findings — the second consecutive
+clean iteration.**
+
+---
+
+## Convergence statement
+
+Stop condition §8:
+
+1. **≥ 95/100, zero Section D FAILs** — not evaluable in this environment:
+   60 of 100 points require the unreachable reference (browser-level proof in
+   [UNREACHABLE.md](./UNREACHABLE.md) §1). Section D has **zero FAILs**.
+2. **Two consecutive iterations with no new failures or findings** —
+   **met**: iterations 17 and 18.
+3. **Every UNVERIFIABLE-HERE row listed with reason and unblock steps** —
+   **met** ([UNREACHABLE.md](./UNREACHABLE.md), [SCORECARD.md](./SCORECARD.md)).
+
+The build has converged on everything measurable here. The remaining work —
+scoring B1–B10 and C1–C9 — requires exactly one thing: reference captures at
+1200 px / DPR 2 (or network reach to take them). Our half of every comparison
+is already measured and committed
+([MEASURED-TIMINGS.md](./MEASURED-TIMINGS.md), `docs/captures/`).
