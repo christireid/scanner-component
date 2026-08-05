@@ -25,10 +25,10 @@ suite; **[source]** = present and configurable in source.
 | A4 | Scan sweep across boxes | **PASS** | [browser] travelling band visible in captures; 4 directions, 3 modes [test]. |
 | A5 | Crosshair with coordinate readout | **PASS** | [browser] visible top-left readout in captures; follows pointer [test policy]. |
 | A6 | All four chip tokens render | **PASS** | [test] `{score} {id} {coords} {time}` plus `{zoom} {mode} {pct} {index} {n} {x} {y} {label} {fps}` — string-for-string assertions. |
-| A7 | Click-to-rescan | **PASS** | [source+test policy] focused rescan around the click; rescan transition tested. |
+| A7 | Click-to-rescan | **PASS** | [browser] click commits a new scan focused exactly at the click (`SCAN-00@(0.25,0.25)`); smoothing-dilution defect found and fixed (log iteration 15). |
 | A8 | Always-on mode | **PASS** | [browser] all captures run activation="always" with no pointer. |
 | A9 | Bitmap, Pixelated, Code, X-Ray all present | **PASS** | [browser] captures per effect; plus `thermal` and `none` (§2.1 row 9). |
-| A10 | Image + video, 8 aspect ratios, mirror | **PASS (image [browser], video [source])** | image pathway captured; video pathway present with rVFC, Range-capable server shipped; not exercised headless (no fixture media delivered). |
+| A10 | Image + video, 8 aspect ratios, mirror | **PASS** | [browser] video plays/paints with 900 ms re-acquisition and 5/5 identity persistence on a VP8 fixture; mirror verified by luminance-profile reversal; 16:9 and 1:1 render exactly. |
 
 **Section A: 10 rows PASS at presence level; A2/A3 carry an explicit
 reference-default caveat.**
@@ -47,10 +47,10 @@ does not exist here.
 
 ## Section C — Behavioural fidelity (30 pts)
 
-Same instrument gap as Section B. Our timings are now *browser-verified to
-run* (reveal, sweep, rescan, always-on idle all animate in captures; the
-demand-driven loop holds ≈60 fps) — but "the same as the reference" is
-unmeasurable here.
+Same instrument gap as Section B. Our side of these behaviours is now
+browser-verified to *work* — hover in/out with leave delay, click-to-rescan
+with exact focus, keyboard, touch tap, reduced motion, ≈60 fps loop, video
+re-acquisition — but "the same as the reference" is unmeasurable here.
 
 | Rows | State |
 | --- | --- |

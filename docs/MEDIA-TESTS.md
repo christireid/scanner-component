@@ -65,3 +65,40 @@ justified by our legibility floor, not by claimed parity.
   committed captures, not by a ground-truth metric — these photographs have no
   annotated truth regions. The numeric floors remain measured on the synthetic
   corpus (BASELINE.md).
+
+
+## Behaviour suite (browser-driven)
+
+`tools/behavior-tests.mjs` against the instrumented harness
+(`tools/build-behavior-harness.mjs`); results in
+`docs/captures/behavior-log.json`. **12 of 12 checks pass:**
+
+| Check | Measured |
+| --- | --- |
+| Video plays and paints | media-canvas motion 1.74M units / 600 ms on the VP8 pan fixture |
+| Video re-acquisition | 6 scans in 4.2 s at a 900 ms interval |
+| Tracking identity on video | 5/5 ids persisted across consecutive rescans |
+| Hover in / hover out | inactive → active → inactive (leave delay + exit honoured) |
+| Click-to-rescan | new scan committed on click |
+| Click focus | `SCAN-00@(0.25,0.25)` — exactly the clicked position |
+| Keyboard | Enter activates + scans; Escape deactivates |
+| Touch tap | activates and issues a focused rescan |
+| Mirror | midline luminance profile matches its own reverse (8.5 vs 86.3 per column) |
+| Aspect 16:9, 1:1 | rendered 1.778 and 1.000 exactly |
+| Reduced motion | overlay pixel diff over 700 ms = 0 |
+
+The video fixture is VP8 (this Chromium has no H.264, as the plan's working
+notes warned) and was recorded by Chromium itself via canvas
+`captureStream` + `MediaRecorder` — the same pathway the component's
+`createCanvasCaptureController` uses.
+
+### Finding: explicit clicks were diluted by stability smoothing
+
+First run of the click-focus check failed: no committed point within 0.05 of
+the click. The focused `SCAN-00` point is committed at the click, but the
+stable tracker's position smoothing (0.58 toward an assigned old track) and
+temporal smoothing (up to 0.42 toward a previous point within a 0.28 match
+radius) dragged it up to ~0.12 normalized away — video-jitter machinery
+overriding a deliberate gesture. Fixed: a scan carrying an explicit focus now
+snaps the focused point back to the exact click after the smoothing pipeline.
+Re-measured: `SCAN-00@(0.25,0.25)` for a click at (0.25, 0.25).

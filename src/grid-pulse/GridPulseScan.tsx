@@ -1992,7 +1992,7 @@ export default function GridPulseScan({
     )
 
     const commitPoints = useCallback(
-        (rawPoints: GridPulsePoint[]) => {
+        (rawPoints: GridPulsePoint[], anchor?: GridPulsePoint) => {
             const { width, height } = sizeRef.current
             const now = performance.now()
             const trackedRawPoints = detection.trackingMode === "stable"
@@ -2043,6 +2043,38 @@ export default function GridPulseScan({
                     revealedAt: matched?.revealedAt ?? now + index * motion.stagger,
                 }
             })
+            // An explicit click is the user's exact target. The stable tracker
+            // and temporal smoothing both pull a fresh focus point toward
+            // detection history (by up to ~0.12 normalized with the shipped
+            // settings) — right for video jitter, wrong for a deliberate
+            // gesture. Snap the focused point back to the click.
+            if (anchor) {
+                const anchorX = clamp(anchor.x, 0, 1)
+                const anchorY = clamp(anchor.y, 0, 1)
+                let anchorIndex = next.findIndex(point => point.id === "SCAN-00")
+                if (anchorIndex < 0 && next.length > 0) {
+                    let best = 0
+                    let bestDistance = Number.POSITIVE_INFINITY
+                    next.forEach((point, index) => {
+                        const distance = Math.hypot(point.x - anchorX, point.y - anchorY)
+                        if (distance < bestDistance) {
+                            bestDistance = distance
+                            best = index
+                        }
+                    })
+                    anchorIndex = best
+                }
+                if (anchorIndex >= 0) {
+                    const focused = next[anchorIndex]
+                    next[anchorIndex] = {
+                        ...focused,
+                        x: anchorX,
+                        y: anchorY,
+                        px: anchorX * width,
+                        py: anchorY * height,
+                    }
+                }
+            }
             pointsRef.current = next
             scanCommittedAtRef.current = Date.now()
             if (rescanTransitionActiveRef.current) {
@@ -2165,7 +2197,7 @@ export default function GridPulseScan({
                             request.id === latestScanRequestRef.current &&
                             request.generation === sourceGenerationRef.current
                         ) {
-                            commitPoints(customPoints.slice(0, requestedCount))
+                            commitPoints(customPoints.slice(0, requestedCount), request.focus)
                             overlayDirtyRef.current = true
                         }
                         continue
@@ -2223,7 +2255,7 @@ export default function GridPulseScan({
                         request.id === latestScanRequestRef.current &&
                         request.generation === sourceGenerationRef.current
                     ) {
-                        commitPoints(combined)
+                        commitPoints(combined, request.focus)
                         overlayDirtyRef.current = true
                     }
                 } catch (error) {

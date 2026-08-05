@@ -1,0 +1,62 @@
+[
+  {
+    "name": "video plays and paints",
+    "pass": true,
+    "detail": "media-canvas motion over 600ms = 1741018"
+  },
+  {
+    "name": "video re-acquisition scans",
+    "pass": true,
+    "detail": "6 scans in 4.2s at 900ms interval"
+  },
+  {
+    "name": "tracking identities persist on video",
+    "pass": true,
+    "detail": "5/5 ids persisted across rescan"
+  },
+  {
+    "name": "hover activates, hover-out dismisses",
+    "pass": true,
+    "detail": "before=false during=true after=false"
+  },
+  {
+    "name": "click-to-rescan commits a new scan",
+    "pass": true,
+    "detail": "1 → 2"
+  },
+  {
+    "name": "rescan focuses the clicked position",
+    "pass": true,
+    "detail": "SCAN-00@(0.25,0.25)"
+  },
+  {
+    "name": "Enter activates and scans; Escape deactivates",
+    "pass": true,
+    "detail": "active=true→false scans 0→2"
+  },
+  {
+    "name": "touch tap activates and rescans",
+    "pass": true,
+    "detail": "scans 0→3 active=true"
+  },
+  {
+    "name": "mirror flips the media",
+    "pass": true,
+    "detail": "direct=86.3 reversed=8.5 per column"
+  },
+  {
+    "name": "aspect 16:9 honoured",
+    "pass": true,
+    "detail": "rendered 1.778 vs 1.778"
+  },
+  {
+    "name": "aspect 1:1 honoured",
+    "pass": true,
+    "detail": "rendered 1.000 vs 1.000"
+  },
+  {
+    "name": "reduced motion freezes the overlay",
+    "pass": true,
+    "detail": "pixel diff over 700ms = 0"
+  }
+]

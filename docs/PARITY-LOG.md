@@ -460,3 +460,41 @@ throughout, Person mode kept all points on structure on the skin-adjacent
 scene. Full report: [MEDIA-TESTS.md](./MEDIA-TESTS.md). Honest limitations
 recorded there: Specimen ≈6 rAF/s in GPU-less headless Chromium; 3.1 s first
 diffusion pass on the 23 MP source.
+
+
+---
+
+### Iteration 15 — explicit clicks were diluted by stability smoothing
+
+**Row:** C7, actual rescan semantics (our side).
+
+**Prediction:** a click at (0.25, 0.25) commits a focused point at the click.
+
+**Measurement:** no committed point within 0.05 of the click. The focus point
+enters the pipeline at the click, then the stable tracker smooths it 0.58
+toward an assigned older track and temporal smoothing pulls up to 0.42 toward
+any previous point within a 0.28 match radius — worst case ≈ 0.12 normalized
+of drift on a deliberate gesture.
+
+**Prediction result:** wrong; the browser check found it.
+
+**Fix:** `commitPoints` accepts the request's focus as an anchor and snaps the
+focused point to it after smoothing. Video stability for autonomous rescans is
+unchanged; only explicit-focus scans anchor. The custom-detector hook path is
+deliberately not anchored — the hook owns its own focus semantics.
+
+**Remeasurement:** `SCAN-00@(0.25,0.25)` exact. Full suite 12/12
+([MEDIA-TESTS.md](./MEDIA-TESTS.md) behaviour table).
+
+---
+
+### Iteration 16 — video pathway and interaction semantics browser-verified
+
+A VP8 WebM pan fixture (recorded by Chromium via canvas captureStream —
+the plan's "no H.264 here" note honoured) drove the video path end to end:
+playback paints, 900 ms re-acquisition commits scans, and tracking identities
+persist 5/5 across rescans (`docs/captures/media/video-tracking.jpg`). Hover
+in/out, keyboard, touch tap, mirror (profile-reversal check), the 16:9 and
+1:1 aspect ratios, and reduced-motion freezing all measured in the same run.
+A10's video half and A7 are now browser-verified on our side; B/C reference
+comparisons remain UNVERIFIABLE-HERE.
