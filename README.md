@@ -1,165 +1,200 @@
-# Grid Pulse Scan Pro — v3.0.0-rc.2
+<div align="center">
 
-A dependency-free React + Canvas tactical media scanner, aiming at parity with
-two Framer marketplace components — Grid Pulse Scan and Specimen — while keeping
-a superset of capability. The canonical tree now carries **both delivered
-lineages**: the v2.29 Grid Pulse engine and the SpecimenGridPulse-Pro v2.8
-integrated renderer, behind one entry point (`src/GridPulseScanPro.tsx` —
-Specimen default export, engine as `GridPulseScan`).
+# Grid Pulse Scan Pro
+
+**Turn any image or video into an interactive tactical scanner.**
+
+A dependency-free React + Canvas component combining two Framer marketplace
+concepts — *Grid Pulse Scan* and *Specimen* — in one engine: real-time feature
+detection, magnified callouts, tracked inspection frames, six media effects,
+eleven presets, and a full scientific-HUD renderer on top.
+
+![Hover reveal — points acquire, boxes unfold, sweeps run](docs/gifs/hero.gif)
+
+*Hover the media and detection points appear — target lock, leader lines with
+tick marks, magnified zoom boxes with animated scan sweeps, corner brackets,
+and live label chips.*
+
+`111/111 tests` · `5/5 quality floors` · `~90 committed browser captures` ·
+`9 defects found & fixed by instruments` · `zero runtime dependencies`
+
+</div>
+
+---
+
+## Everything, in motion
+
+Every GIF below was recorded from the real component running in Chromium by
+[`tools/record-gifs.mjs`](tools/record-gifs.mjs) — nothing is mocked.
+
+### Click to rescan
+Click anywhere: the current detection set fades through a blackout gap, a new
+scan commits, and the focused point lands **exactly** where you clicked.
+
+![Click to rescan](docs/gifs/click-rescan.gif)
+
+### Three detection modes
+`auto` blends structure and person signals, `person` weights skin regions
+(with native `FaceDetector` when the browser has one), `detail` chases edges
+and texture. Deterministic per seed — same media, same points.
+
+![Detection modes cycling on a magenta botanical](docs/gifs/detection-modes.gif)
+
+### Six media effects
+`none → bitmap → pixelated → code → xray → thermal`, applied to the media,
+the callouts, or both. All parameterized: dither matrices, glyph sets, edge
+weights, tone curves, false-colour ramps.
+
+![Effect cycle on the dahlia](docs/gifs/effects.gif)
+
+### Floyd–Steinberg dither palettes
+`bitmapMethod: "diffusion"` with five named palettes — `duotone`, `mono4`,
+`handheld`, `amber`, `cmyk` — plus threshold, ordered-Bayer, and halftone
+methods.
+
+![Dither palette cycle](docs/gifs/palettes.gif)
+
+### Eleven engine presets
+One prop: `preset="loupe"`. Loupe, telemetry, plate, survey, lattice, contour,
+hairline, swarm, field, viewfinder, tracking — each a distinct instrument
+built from public options, so every one is reproducible by hand.
+
+![All eleven presets](docs/gifs/presets.gif)
+
+### Ten Specimen scenes
+The integrated renderer layers a scientific-vision system on the engine:
+tracked inspection frames, scene graph meshes, acquisition choreography,
+typed labels, HUD, film finish, GPU post-processing with automatic fallback
+and adaptive quality.
+
+![Specimen scene cycle](docs/gifs/specimen-scenes.gif)
+
+### Video with stable tracking
+Video plays through the same pipeline. Identities persist across re-scans —
+the tracker solves exact minimum-cost assignment up to 12 points and greedy
+nearest-first up to 80.
+
+![Tracked callouts riding a panning video](docs/gifs/video-tracking.gif)
+
+### Adaptive chrome
+The chrome samples the media and picks its own ink — dark lines on a white
+X-ray plate, light on a black dahlia, per-zone and per-point. On by default,
+because white-on-white was a real failure a real photo caught.
+
+![White media then dark media, chrome adapting](docs/gifs/adaptive-chrome.gif)
+
+### Crosshair + live telemetry
+A frame-rate-independent crosshair follower (95 ms to 99% of the gap,
+measured 92.7) with lat/lon, percent, or pixel readout — and label chips
+streaming `{score} {id} {coords} {time} {zoom} {mode} {pct} {index} {n} {x}
+{y} {label} {fps}`.
+
+![Telemetry preset with crosshair readout](docs/gifs/crosshair.gif)
+
+---
 
 ## Quick start
 
 ```bash
 npm ci
-npm run dev       # http://localhost:5173
+npm run dev       # demo at http://localhost:5173 — both renderers, all presets
+npm run verify    # typecheck + 111 tests + lint + inventory + quality floors
 ```
 
-```bash
-npm run verify    # typecheck + tests + lint + inventory + quality floors
-npm run build     # typecheck, then production build
-```
-
-## Scripts
-
-| Script | What it does |
-| --- | --- |
-| `dev` | Vite dev server with the preset demo |
-| `build` | Typecheck, then production build |
-| `typecheck` | `tsc -b`, strict, no unused locals or parameters |
-| `test` | 110 checks across 12 suites, run directly from TypeScript |
-| `lint:css` | Stylesheets and CSS-valued strings in TypeScript |
-| `inventory` | Regenerate the feature inventory; fails on any removal |
-| `quality` | Section 5.3 quality floors |
-| `harness` | Generate 145 fixed-viewport screenshot-harness pages |
-| `serve` | Range-capable static server (needed for video) |
-| `verify` | All of the above checks in one command |
-
-## Layout
-
-```
-src/
-  GridPulseScanPro.tsx        the only public entry point (both renderers)
-  grid-pulse/                 engine, Specimen renderer, vision framework,
-                              35 policy/type/defaults modules
-  demo/App.tsx                dual-renderer preset demo
-test/                         12 suites, 110 checks
-tools/                        lint, inventory, quality, harness, server,
-                              browser capture + preset-distinctness instruments
-docs/                         the original parity plan, log, scorecard, baseline,
-                              unreachable record, reference, 29 browser captures
-```
-
-Nothing outside `src/GridPulseScanPro.tsx` imports from `src/grid-pulse/` — the
-test suite enforces it.
-
-## Usage
+## Use it
 
 ```tsx
-import GridPulseScan from "./src/GridPulseScanPro"
+// The integrated Specimen renderer (default export)
+import SpecimenGridPulse from "./src/GridPulseScanPro"
+
+<SpecimenGridPulse src="/media/clip.mp4" preset="Feature Tracking"
+    style={{ width: "100%", height: 560 }} />
+```
+
+```tsx
+// The Grid Pulse engine
+import { GridPulseScan } from "./src/GridPulseScanPro"
 
 <GridPulseScan
     src="/media/portrait.jpg"
-    style={{ width: "100%", height: 560 }}
+    preset="telemetry"                       // or any of the 11
     detection={{ mode: "detail", pointCount: 6 }}
-    effect={{ type: "xray", scope: "both" }}
-    boxes={{ layout: "callout" }}
-    interaction={{ activation: "always", clickToRescan: true }}
+    effect={{ type: "thermal", scope: "media" }}
+    interaction={{ activation: "hover", clickToRescan: true }}
+    style={{ width: "100%", height: 560 }}
 />
 ```
 
-Full reference: [docs/COMPONENT.md](./docs/COMPONENT.md).
+**In Framer:** paste [`src/GridPulseScan.framer.tsx`](src/GridPulseScan.framer.tsx)
+(engine — mirrors the reference component's control set) or
+[`src/GridPulseScanPro.framer.tsx`](src/GridPulseScanPro.framer.tsx)
+(Specimen renderer) into a code file along with `src/`. Full property
+controls: media, scene/preset, detection, effects, all 8 aspect ratios,
+mirror, activation, chrome. Typechecked against the published `framer` types.
 
-## Reference feature coverage (marketplace list, §2 of the plan)
+Full API: [docs/COMPONENT.md](docs/COMPONENT.md).
 
-Every listed feature is implemented and exercised: Auto/Person/Detail modes ·
-animated grid with configurable opacity · tick-marked connections (leaders,
-point-to-point, or both) · box scan sweeps · crosshair with coordinate
-readout · `{score} {id} {coords} {time}` chips (plus 9 more tokens) ·
-click-to-rescan · always-on · Bitmap/Pixelated/Code/X-Ray (plus thermal and
-none) · image and video · the 8 aspect ratios · mirror · configurable
-grid/crosshair/connections/labels. Superset capabilities per the plan's §5.1
-inventory: 11 named presets, dither palettes with Floyd–Steinberg, 80-point
-density, custom detector hook, tracking frames with parallax, the Specimen
-scene system, plugins, GPU post-processing, and an imperative bridge.
-
-## Where the parity programme actually stands
-
-**Read [docs/UNREACHABLE.md](./docs/UNREACHABLE.md) before quoting any number
-from this repository.**
+## Capability sheet
 
 | | |
 | --- | --- |
-| Canonical build | **done** — builds, typechecks, tests, measures, and renders in a real browser |
-| Section A (scope) | **10 of 10 rows PASS** (A2/A3 carry a reference-default caveat) |
-| Section D (non-regression) | **5 PASS, 1 UNVERIFIABLE-HERE, 0 FAIL** |
-| Sections B and C (fidelity) | **19 rows, all UNVERIFIABLE-HERE** — the reference runtime and its demo media are blocked at the egress proxy, verified with a real Chromium (`net::ERR_TUNNEL_CONNECTION_FAILED`) |
-| Local browser evidence | **69 captures, 0 page errors**, in `docs/captures/` — presets, effects, Specimen scenes, and a 4-photo × 10-scenario real-media matrix ([MEDIA-TESTS.md](./docs/MEDIA-TESTS.md)) |
-| Official parity score | **not established, and not estimated** |
-| Convergence (§8.2) | **met — iterations 20 and 21** are consecutive zero-finding passes on the build that includes all nine defect fixes; everything measurable here is measured |
+| **Detection** | auto / person / detail / custom · native FaceDetector with saliency fallback · deterministic seeds · focus bias · click-focused rescan · up to 80 points · custom detector hook |
+| **Tracking** | stable identity assignment (exact ≤12, greedy ≤80) · velocity prediction · temporal smoothing · lost-frame coasting · video re-acquisition |
+| **Callouts** | magnified zoom boxes or Specimen tracking frames · overlap avoidance · corner brackets · scan sweeps (4 directions, 3 modes) · acquire/unfold/pop choreography · parallax |
+| **Chrome** | animated grid (dash/drift/pulse/scan) · leader + point-to-point connections (nearest/chain/hub) with tick marks · crosshair with 3 coordinate styles · 13 label tokens, 4 time formats · adaptive light/dark chrome, regional zones, halo |
+| **Effects** | bitmap (threshold/ordered/halftone/diffusion + 5 palettes) · pixelated · code glyphs · x-ray · thermal (3 ramps) · media/boxes/both scoping · throttled video refresh · graceful cross-origin degradation |
+| **Specimen layer** | 10 scenes · scene-graph meshes (nearest/mst/mesh) · ghost nodes · scan waves · typed labels · renderer profiles · lens optics · film finish · HUD · preset rail · plugin phases · WebGL2 post-processing with software-GL detection and adaptive quality tiers · MediaRecorder capture controller |
+| **Interaction** | hover / always / tap · touch models (auto/tap-toggle/press-hold/rescan) · keyboard (Enter/Escape) · click-to-rescan · auto-rescan interval · reduced-motion support |
+| **Media** | image + video (rVFC) · 8 aspect ratios · mirror · object-fit + focal point · DPR cap · demand-driven render loop · offscreen pause |
+| **Integration** | imperative render bridge (per-frame snapshots, canvases, points) · Framer wrappers · 11 preset bundles · full TypeScript surface (245 options, 116 exported types) |
 
-The reference runtime was never observed: `framer.com` and `*.framer.website`
-are denied by this environment's egress policy, returning HTTP 403 at CONNECT.
-60 of the 100 rubric points depend on measuring that runtime, so no total score
-is claimed. Producing one would mean recording inference as measurement.
+## The parity programme, honestly
 
-Two further gaps are recorded rather than papered over: the **v2.30–v2.35**
-artifacts were not in the delivered archive and were not re-implemented from
-their descriptions, and the **original 79-check suite** was not delivered, so
-the 85 checks here are a new suite, not that one.
+This repo implements the exact-parity programme in
+[docs/PARITY-PLAN.md](docs/PARITY-PLAN.md) against the paid references. Read
+[docs/FINAL-REPORT.md](docs/FINAL-REPORT.md) first — the short version:
 
-## What consolidation found
-
-Building the measurement infrastructure surfaced five defects that reading the
-source did not. Each is logged with its measurement in
-[docs/PARITY-LOG.md](./docs/PARITY-LOG.md).
-
-1. The delivered package **did not build** — `tsc -b` failed on a missing
-   `vite-env.d.ts`, and there was no lockfile or Vite config.
-2. Every callout chip rendered the literal text `(zoom)` — a token written with
-   parentheses instead of braces.
-3. Every box shadow rendered at `0 10px 28px` instead of the configured
-   `0 12px 42px`, because the parser required a `px` unit on the leading zero.
-4. **Person mode degenerated toward random placement** on media without skin
-   tones: a fixed tie-break jitter was 11.4% of that mode's compressed score
-   range, against 2.5% for the others.
-5. The public target tracker did not clamp newly acquired points.
-6. **Specimen adaptive quality could not rescue a collapse** — SwiftShader
-   passed the WebGL2 probe so software GL ran the GPU pass at 318 ms/frame,
-   and the degradation loop judged lifetime averages too slowly to ever fire.
-   Fixed with software-GL detection and windowed degradation: 2.1–2.7 ms
-   frames, ~150× improvement.
-7. **The shipped default was illegible on white media** — white chrome on a
-   white photograph. Found by testing user-supplied photos; fixed by defaulting
-   `adaptiveChrome` on (global mode), before/after captures committed.
-8. **The demand-driven render loop froze permanently with a blank overlay** —
-   the rescan fade passes through alpha 0 and the loop's keep-alive condition
-   was gated on `overlayAlpha > 0`. Invisible in code review and interactive
-   use; found by instrumenting rAF counts in the local browser (6 frames, then
-   silence). Fixed; now holds ≈60 fps.
-
-The Specimen-style tracking-frame layout was also found shipping as dead code —
-90 lines, exported, never imported — and is now reachable via
-`boxes.layout: "tracking"`.
-
-## Using it in Framer
-
-`src/GridPulseScan.framer.tsx` (engine, mirrors the reference's control set)
-and `src/GridPulseScanPro.framer.tsx` (integrated Specimen renderer) are
-code-component wrappers with full property controls, typechecked against the
-published `framer` type definitions. Paste either into a Framer code file
-along with `src/` — the properties panel exposes media, scene/preset,
-detection, effects, aspect, mirror, activation, and chrome.
+- **Scope (A): 10/10 rows pass**, browser-exercised. **Non-regression (D):
+  zero FAILs.** Convergence (§8.2) met — two consecutive zero-finding
+  iterations on the final build.
+- **Visual/behavioural fidelity vs the reference (B, C): unverifiable here
+  and honestly left unscored** — the reference's hosts are refused at this
+  environment's egress proxy (proven with curl *and* a real Chromium). Our
+  half of every comparison is measured and committed
+  ([docs/MEASURED-TIMINGS.md](docs/MEASURED-TIMINGS.md)); supply reference
+  captures at 1200 px / DPR 2 and scoring is immediate.
+- Nine real defects were found by instruments and fixed with before/after
+  measurements — including a render loop that froze permanently at 6 frames,
+  white-on-white chrome on light media, and an adaptive-quality system that
+  couldn't rescue a 12× budget collapse (now ~150× faster where it matters).
+  Full log: [docs/PARITY-LOG.md](docs/PARITY-LOG.md).
 
 ## Docs
 
 | File | Contents |
 | --- | --- |
-| [FINAL-REPORT.md](./docs/FINAL-REPORT.md) | The plan §8 closing deliverable — start here |
-| [COMPONENT.md](./docs/COMPONENT.md) | API reference |
-| [PARITY-PLAN.md](./docs/PARITY-PLAN.md) | The programme, with recorded ambiguities |
-| [SCORECARD.md](./docs/SCORECARD.md) | Every rubric row and its state |
-| [BASELINE.md](./docs/BASELINE.md) | Measured baseline, before/after tables |
-| [PARITY-LOG.md](./docs/PARITY-LOG.md) | Iteration log |
-| [UNREACHABLE.md](./docs/UNREACHABLE.md) | What cannot be done here, and why |
-| [ENHANCEMENTS.md](./docs/ENHANCEMENTS.md) | Version history |
-| [FEATURE-INVENTORY.json](./docs/FEATURE-INVENTORY.json) | Machine-checked inventory |
+| [FINAL-REPORT.md](docs/FINAL-REPORT.md) | The programme's closing deliverable — start here |
+| [COMPONENT.md](docs/COMPONENT.md) | Full API reference |
+| [PARITY-PLAN.md](docs/PARITY-PLAN.md) | The original programme brief, verbatim |
+| [SCORECARD.md](docs/SCORECARD.md) · [parity-score.json](docs/parity-score.json) | Every rubric row and its evidence |
+| [MEASURED-TIMINGS.md](docs/MEASURED-TIMINGS.md) | Our side of every behavioural timing, browser-measured |
+| [MEDIA-TESTS.md](docs/MEDIA-TESTS.md) | 4 real photos × 10 scenarios, with findings |
+| [BASELINE.md](docs/BASELINE.md) · [PARITY-LOG.md](docs/PARITY-LOG.md) | Metrics history and the 22-iteration log |
+| [UNREACHABLE.md](docs/UNREACHABLE.md) | What cannot be verified here, and exactly why |
+| [ENHANCEMENTS.md](docs/ENHANCEMENTS.md) · [FEATURE-INVENTORY.json](docs/FEATURE-INVENTORY.json) | Version history and the machine-checked inventory |
+
+## Repository
+
+```
+src/GridPulseScanPro.tsx          the only public entry point (both renderers)
+src/*.framer.tsx                  Framer code-component wrappers
+src/grid-pulse/                   engine + Specimen renderer + vision framework
+src/demo/                         demo app, v2.8 playground, capture app
+test/                             12 suites, 111 checks (node --test, no build step)
+tools/                            lint · inventory · quality floors · harnesses ·
+                                  browser capture/behaviour/hardening/timing/GIF instruments
+docs/                             the full evidence trail (captures, gifs, reports)
+```
+
+Nothing outside the entry point imports from `src/grid-pulse/` — a test
+enforces it. Every number in every doc was produced by a committed tool.

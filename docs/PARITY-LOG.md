@@ -682,3 +682,18 @@ pair — convergence re-established, now including the adaptive-quality fix.**
 
 Verification unchanged and green. Remaining work is exactly the
 UNREACHABLE set; nothing actionable in this environment is left open.
+
+
+---
+
+### Iteration 23 — visual README with recorded GIFs
+
+`tools/record-gifs.mjs`: a CDP-screencast recorder (JPEG stream scaled
+in-browser → pure-JS decode → gifenc, true per-frame delays) drove ten real
+component scenarios and produced `docs/gifs/` (~22 MB): hover reveal,
+click-to-rescan with exact focus, the three detection modes, all six
+effects, the five dither palettes, all eleven engine presets, all ten
+Specimen scenes, video tracking on the VP8 pan fixture, adaptive chrome
+across white→dark media, and the telemetry crosshair. The README was rebuilt
+visual-first around them; every GIF is recorded from the running component,
+nothing mocked. Verification unchanged and green.
