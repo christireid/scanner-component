@@ -243,6 +243,8 @@ export interface GridPulseBoxOptions {
     cornerBrackets: boolean
     cornerLength: number
     cornerWidth: number
+    /** Bracket stroke opacity, independent of the frame border. */
+    cornerOpacity: number
     scanSweep: boolean
     scanColor: string
     scanOpacity: number

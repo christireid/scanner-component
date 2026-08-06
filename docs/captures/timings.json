@@ -8,13 +8,13 @@
     "measured": {
       "pointsMeasured": 5,
       "totalRevealMs": 683.3,
-      "perPointRevealTo99Ms": 316.7,
-      "meanStaggerMs": 87.5,
+      "perPointRevealTo99Ms": 316.6,
+      "meanStaggerMs": 91.7,
       "staggersMs": [
-        83.4,
         83.3,
         100,
-        83.3
+        83.3,
+        100
       ]
     }
   },
@@ -27,8 +27,8 @@
     "measured": {
       "wraps": 3,
       "periodsMs": [
-        1469,
-        1448
+        1435,
+        1482
       ],
       "meanPeriodMs": 1458
     }
@@ -39,7 +39,7 @@
       "note": "time to cover 99% of the gap"
     },
     "measured": {
-      "latencyMs": 93.7,
+      "latencyMs": 109.5,
       "remainingShare": 0.003509644741569451
     }
   },
@@ -49,8 +49,8 @@
       "exitDurationMs": 220
     },
     "measured": {
-      "deactivateMs": 107.6,
-      "overlayClearMs": 341.1
+      "deactivateMs": 105.7,
+      "overlayClearMs": 339.2
     }
   },
   "chipContrast": {

@@ -85,7 +85,7 @@ because white-on-white was a real failure a real photo caught.
 
 ### Crosshair + live telemetry
 A frame-rate-independent crosshair follower (95 ms to 99% of the gap,
-measured 92.7) with lat/lon, percent, or pixel readout — and label chips
+measured within one frame of that) with lat/lon, percent, or pixel readout — and label chips
 streaming `{score} {id} {coords} {time} {zoom} {mode} {pct} {index} {n} {x}
 {y} {label} {fps}`.
 
@@ -179,7 +179,7 @@ This repo implements the exact-parity programme in
 | [SCORECARD.md](docs/SCORECARD.md) · [parity-score.json](docs/parity-score.json) | Every rubric row and its evidence |
 | [MEASURED-TIMINGS.md](docs/MEASURED-TIMINGS.md) | Our side of every behavioural timing, browser-measured |
 | [MEDIA-TESTS.md](docs/MEDIA-TESTS.md) | 4 real photos × 10 scenarios, with findings |
-| [BASELINE.md](docs/BASELINE.md) · [PARITY-LOG.md](docs/PARITY-LOG.md) | Metrics history and the 22-iteration log |
+| [BASELINE.md](docs/BASELINE.md) · [PARITY-LOG.md](docs/PARITY-LOG.md) | Metrics history and the 24-iteration log |
 | [UNREACHABLE.md](docs/UNREACHABLE.md) | What cannot be verified here, and exactly why |
 | [ENHANCEMENTS.md](docs/ENHANCEMENTS.md) · [FEATURE-INVENTORY.json](docs/FEATURE-INVENTORY.json) | Version history and the machine-checked inventory |
 

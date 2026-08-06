@@ -1290,7 +1290,21 @@ const drawPoint = (
         ctx.lineTo(point.px, point.py + size / 2)
         ctx.stroke()
     } else {
+        // Reticle designator: outline square, four outward axis ticks, and a
+        // centre dot — reads as a target lock rather than a plain handle.
         ctx.strokeRect(point.px - size / 2, point.py - size / 2, size, size)
+        const tick = Math.max(3, size * 0.45)
+        const edge = size / 2 + 2
+        ctx.beginPath()
+        ctx.moveTo(point.px - edge, point.py)
+        ctx.lineTo(point.px - edge - tick, point.py)
+        ctx.moveTo(point.px + edge, point.py)
+        ctx.lineTo(point.px + edge + tick, point.py)
+        ctx.moveTo(point.px, point.py - edge)
+        ctx.lineTo(point.px, point.py - edge - tick)
+        ctx.moveTo(point.px, point.py + edge)
+        ctx.lineTo(point.px, point.py + edge + tick)
+        ctx.stroke()
     }
     ctx.fillRect(point.px - 1, point.py - 1, 2, 2)
     if (options.pulse && !reducedMotion) {
@@ -1418,13 +1432,16 @@ const drawConnection = (
         reducedMotion,
     })
     const visibleLength = length * state.drawProgress
+    // Stand-off: the leader starts clear of the reticle instead of piercing
+    // its centre — annotation-style, and it keeps the designator legible.
+    const standOff = Math.min(options.pointSize / 2 + 6, length * 0.4)
     ctx.save()
     ctx.strokeStyle = options.color
     ctx.fillStyle = options.color
     ctx.globalAlpha = clamp(options.opacity * alpha, 0, 1)
     ctx.lineWidth = options.lineWidth
     ctx.setLineDash(options.dash)
-    drawAnimatedSegment(ctx, point.px, point.py, end.x, end.y, 0, visibleLength, length)
+    drawAnimatedSegment(ctx, point.px, point.py, end.x, end.y, standOff, visibleLength, length)
     if (options.tickMarks && options.tickSpacing > 0) {
         ctx.setLineDash([])
         const nx = -dy / length
@@ -1462,11 +1479,17 @@ const drawBrackets = (
     alpha: number
 ) => {
     if (!options.cornerBrackets) return
-    const { x, y, width, height } = box
+    // Brackets sit 1.5px proud of the frame so they read over any crop and
+    // over the (deliberately quieter) border — the target-lock silhouette.
+    const inset = -1.5
+    const x = box.x + inset
+    const y = box.y + inset
+    const width = box.width - inset * 2
+    const height = box.height - inset * 2
     const l = Math.min(options.cornerLength, width / 3, height / 3)
     ctx.save()
     ctx.strokeStyle = options.borderColor
-    ctx.globalAlpha = clamp(options.borderOpacity * alpha, 0, 1)
+    ctx.globalAlpha = clamp(options.cornerOpacity * alpha, 0, 1)
     ctx.lineWidth = options.cornerWidth
     ctx.setLineDash([])
     ctx.beginPath()
@@ -1690,6 +1713,9 @@ const drawZoomBox = (
                 gradient.addColorStop(1, transparent)
                 ctx.fillStyle = gradient
                 ctx.fillRect(x - band * (0.5 + trail), box.y, band * (1 + trail), box.height)
+                ctx.globalAlpha = clamp(boxOptions.scanOpacity * 0.5 * mediaAlpha, 0, 1)
+                ctx.fillStyle = "rgba(0,0,0,1)"
+                ctx.fillRect(x - 1, box.y, boxOptions.scanWidth + 2, box.height)
                 ctx.globalAlpha = clamp(boxOptions.scanOpacity * 1.12 * mediaAlpha, 0, 1)
                 ctx.fillStyle = boxOptions.scanColor
                 ctx.fillRect(x, box.y, boxOptions.scanWidth, box.height)
@@ -1705,6 +1731,9 @@ const drawZoomBox = (
                 gradient.addColorStop(1, transparent)
                 ctx.fillStyle = gradient
                 ctx.fillRect(position - band, -box.height * 2, band * 2, box.height * 4)
+                ctx.globalAlpha = clamp(boxOptions.scanOpacity * 0.5 * mediaAlpha, 0, 1)
+                ctx.fillStyle = "rgba(0,0,0,1)"
+                ctx.fillRect(position - 1, -box.height * 2, boxOptions.scanWidth + 2, box.height * 4)
                 ctx.globalAlpha = clamp(boxOptions.scanOpacity * 1.12 * mediaAlpha, 0, 1)
                 ctx.fillStyle = boxOptions.scanColor
                 ctx.fillRect(position, -box.height * 2, boxOptions.scanWidth, box.height * 4)
@@ -1718,6 +1747,9 @@ const drawZoomBox = (
                 gradient.addColorStop(1, transparent)
                 ctx.fillStyle = gradient
                 ctx.fillRect(box.x, y - band * (0.5 + trail), box.width, band * (1 + trail))
+                ctx.globalAlpha = clamp(boxOptions.scanOpacity * 0.5 * mediaAlpha, 0, 1)
+                ctx.fillStyle = "rgba(0,0,0,1)"
+                ctx.fillRect(box.x, y - 1, box.width, boxOptions.scanWidth + 2)
                 ctx.globalAlpha = clamp(boxOptions.scanOpacity * 1.12 * mediaAlpha, 0, 1)
                 ctx.fillStyle = boxOptions.scanColor
                 ctx.fillRect(box.x, y, box.width, boxOptions.scanWidth)

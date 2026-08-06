@@ -697,3 +697,55 @@ Specimen scenes, video tracking on the VP8 pan fixture, adaptive chrome
 across white→dark media, and the telemetry crosshair. The README was rebuilt
 visual-first around them; every GIF is recorded from the running component,
 nothing mocked. Verification unchanged and green.
+
+
+---
+
+### Iteration 24 — default design calibration (our side only)
+
+User direction: the default aesthetic did not read as a tactical scanner.
+This iteration restyles **our** defaults and drawing code; it makes **no
+reference-parity claim** — the reference's appearance remains unverifiable
+here (B rows stay UNVERIFIABLE-HERE, [UNREACHABLE.md](./UNREACHABLE.md) §1).
+
+Drawing changes (`GridPulseScan.tsx`):
+
+- **Reticle point markers** — the square marker is now a stroked reticle:
+  open square, four outward axis ticks (`max(3, size × 0.45)` long, starting
+  2 px off the edge), and a 2 px centre dot.
+- **Proud corner brackets** — brackets sit 1.5 px outside the box edge and
+  use a new `cornerOpacity` option (default 1) instead of inheriting
+  `borderOpacity`, so they read as a separate target-lock layer over a
+  quieter frame.
+- **Sweep underlay** — a half-opacity dark band is painted beneath the
+  bright sweep core in all three direction branches, keeping the sweep
+  visible over bright media.
+- **Leader stand-off** — connection leaders start
+  `min(pointSize / 2 + 6, length × 0.4)` away from the marker instead of at
+  its centre, so lines no longer pierce the reticle.
+
+Default calibration (`GridPulseDefaults.ts`): grid `dash [3, 6]`,
+grid `opacity 0.17`, `pointSize 10`, `tickLength 6`, `borderOpacity 0.5`,
+`cornerLength 16`, `cornerOpacity 1`, crosshair `opacity 0.55`. One option
+added (`cornerOpacity` on `GridPulseBoxOptions`) — inventory grew, nothing
+removed.
+
+Evidence and non-regression, full battery on the new build:
+
+- Before/after: `captures/lilies-default-before.jpg` lineage vs
+  `captures/design-after-default.jpg` (new default, visually confirmed:
+  reticle designators, proud brackets, visible sweep, survey grid,
+  stand-off leaders).
+- Behaviour 12/12, hardening 7/7. Timings still within one frame of
+  configuration (stagger 91.7 ms vs 90, sweep 1458 ms vs 1450, crosshair
+  109.5 ms vs 95, hover-out 105.7 / 339.2 ms, chip contrast 17.1:1, resize
+  exact) — [MEASURED-TIMINGS.md](./MEASURED-TIMINGS.md) updated to this run.
+- Preset distinctness **improved** — weakest overlay pairs now
+  swarm↔field 1.53, lattice↔swarm 2.02, survey↔contour 2.09 (the quieter
+  default grid separates presets that override it).
+- Media-matrix and preset captures re-taken (20/20 ready), all ten GIFs
+  re-recorded against the new defaults.
+
+No behavioural findings. This was a directed design change, not a defect,
+so the §8.2 convergence pair from iterations 20–21 stands for the
+behavioural programme; design remains open to further user calibration.
