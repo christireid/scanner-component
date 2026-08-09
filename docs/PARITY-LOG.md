@@ -749,3 +749,63 @@ Evidence and non-regression, full battery on the new build:
 No behavioural findings. This was a directed design change, not a defect,
 so the §8.2 convergence pair from iterations 20–21 stands for the
 behavioural programme; design remains open to further user calibration.
+
+
+---
+
+### Iteration 25 — the HUD pass: default design rebuilt as an instrument
+
+User direction after iteration 24: "even more drastic improvements." This
+iteration adds a whole overlay layer and changes the out-of-the-box
+composition. Like iteration 24 it styles **our** side only and makes no
+reference-parity claim (B rows stay UNVERIFIABLE-HERE).
+
+New capability — `hud` option group (20 options, default ON):
+
+- **Instrument frame**: corner brackets around the viewport itself plus
+  ruler ticks along all four edges.
+- **Live readouts**: `SCAN {mode} · TGT {n}` top-left with a pulsing status
+  dot, `{w}×{h} · {fps} FPS` bottom-right; template tokens `{mode} {n}
+  {fps} {w} {h}`, uppercase mono with letter-spacing.
+- **Acquisition sweep**: a full-stage scan line with a soft trail crosses
+  the media once per scan commit (900 ms, ease-out, dark keel line for
+  bright media). Suppressed under reduced motion.
+- The entire layer participates in adaptive chrome — global and regional —
+  verified on the white X-ray plate (dark ink throughout,
+  `captures/design-lilies-default.jpg`).
+
+Grid gains `style: "lines" | "crosses"` — the default becomes `crosses`:
+`+` registration marks at major intersections, survey dots at subdivisions,
+opacity recalibrated 0.17 → 0.4 for the sparser coverage. Reticle markers
+gain a rotating two-segment lock ring (static under reduced motion). Chip
+defaults become telemetry tags: `TGT {index} · {score}` with a hairline
+border.
+
+Presets keep their identities explicitly: line-grid presets pin
+`style: "lines"`; the bare instruments (loupe, plate, lattice, contour,
+hairline, swarm) pin `hud: { visible: false }`. Contour's chained tracing
+gained a long-dash stroke after the overlay-distinctness monitor showed the
+barer contour/swarm pair at 1.03 (now 1.26; contour's full composition also
+carries the X-ray media effect, which the overlay-only number excludes).
+
+Two shipped-contract tests were updated for the intentional changes (13
+option groups; new default chip template). Inventory: 245 → 266 option
+properties across 13 groups — nothing removed. New evidence:
+`captures/design-{dahlia,lilies,saponaria,helichrysum}-default.jpg` and
+`captures/design-dahlia-sweep.jpg` (mid-sweep frame).
+
+Full battery on the new build: 111/111 tests, behaviour 12/12, hardening
+7/7, timings within tolerance (stagger 91.7 ms vs 90, box sweep 1442 ms vs
+1450, crosshair 89.8 ms vs 95, chip contrast 17.1:1, resize exact —
+MEASURED-TIMINGS.md updated), quality floors 5/5, media matrix 40/40
+clean, all captures and GIFs re-recorded.
+
+Instrument note, disclosed: headless capture parks the virtual mouse at
+(0,0), which is inside the stage and drags the crosshair into the top-left
+corner where its coordinate label collides with the new HUD readout. Real
+pointer use only hits that at the extreme corner. Capture scripts now park
+the pointer mid-frame; not a component defect.
+
+No behavioural findings. The §8.2 convergence pair from iterations 20–21
+stands for the behavioural programme; the design remains open to further
+user calibration.

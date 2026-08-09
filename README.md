@@ -11,9 +11,10 @@ eleven presets, and a full scientific-HUD renderer on top.
 
 ![Hover reveal — points acquire, boxes unfold, sweeps run](docs/gifs/hero.gif)
 
-*Hover the media and detection points appear — target lock, leader lines with
-tick marks, magnified zoom boxes with animated scan sweeps, corner brackets,
-and live label chips.*
+*Hover the media and the instrument wakes — an acquisition sweep crosses the
+stage, reticle designators lock on with rotating rings, magnified callouts
+unfold behind leader lines, and the HUD frame streams live telemetry from its
+corners.*
 
 `111/111 tests` · `5/5 quality floors` · `~90 committed browser captures` ·
 `9 defects found & fixed by instruments` · `zero runtime dependencies`
@@ -141,12 +142,12 @@ Full API: [docs/COMPONENT.md](docs/COMPONENT.md).
 | **Detection** | auto / person / detail / custom · native FaceDetector with saliency fallback · deterministic seeds · focus bias · click-focused rescan · up to 80 points · custom detector hook |
 | **Tracking** | stable identity assignment (exact ≤12, greedy ≤80) · velocity prediction · temporal smoothing · lost-frame coasting · video re-acquisition |
 | **Callouts** | magnified zoom boxes or Specimen tracking frames · overlap avoidance · corner brackets · scan sweeps (4 directions, 3 modes) · acquire/unfold/pop choreography · parallax |
-| **Chrome** | animated grid (dash/drift/pulse/scan) · leader + point-to-point connections (nearest/chain/hub) with tick marks · crosshair with 3 coordinate styles · 13 label tokens, 4 time formats · adaptive light/dark chrome, regional zones, halo |
+| **Chrome** | instrument HUD (viewport brackets, edge rulers, live readouts, status dot, full-stage acquisition sweep) · registration-cross or ruled grid, animated (dash/drift/pulse/scan) · leader + point-to-point connections (nearest/chain/hub) with tick marks · reticle markers with rotating lock rings · crosshair with 3 coordinate styles · 13 label tokens, 4 time formats · adaptive light/dark chrome, regional zones, halo |
 | **Effects** | bitmap (threshold/ordered/halftone/diffusion + 5 palettes) · pixelated · code glyphs · x-ray · thermal (3 ramps) · media/boxes/both scoping · throttled video refresh · graceful cross-origin degradation |
 | **Specimen layer** | 10 scenes · scene-graph meshes (nearest/mst/mesh) · ghost nodes · scan waves · typed labels · renderer profiles · lens optics · film finish · HUD · preset rail · plugin phases · WebGL2 post-processing with software-GL detection and adaptive quality tiers · MediaRecorder capture controller |
 | **Interaction** | hover / always / tap · touch models (auto/tap-toggle/press-hold/rescan) · keyboard (Enter/Escape) · click-to-rescan · auto-rescan interval · reduced-motion support |
 | **Media** | image + video (rVFC) · 8 aspect ratios · mirror · object-fit + focal point · DPR cap · demand-driven render loop · offscreen pause |
-| **Integration** | imperative render bridge (per-frame snapshots, canvases, points) · Framer wrappers · 11 preset bundles · full TypeScript surface (245 options, 116 exported types) |
+| **Integration** | imperative render bridge (per-frame snapshots, canvases, points) · Framer wrappers · 11 preset bundles · full TypeScript surface (266 options, 116 exported types) |
 
 ## The parity programme, honestly
 
@@ -179,7 +180,7 @@ This repo implements the exact-parity programme in
 | [SCORECARD.md](docs/SCORECARD.md) · [parity-score.json](docs/parity-score.json) | Every rubric row and its evidence |
 | [MEASURED-TIMINGS.md](docs/MEASURED-TIMINGS.md) | Our side of every behavioural timing, browser-measured |
 | [MEDIA-TESTS.md](docs/MEDIA-TESTS.md) | 4 real photos × 10 scenarios, with findings |
-| [BASELINE.md](docs/BASELINE.md) · [PARITY-LOG.md](docs/PARITY-LOG.md) | Metrics history and the 24-iteration log |
+| [BASELINE.md](docs/BASELINE.md) · [PARITY-LOG.md](docs/PARITY-LOG.md) | Metrics history and the 25-iteration log |
 | [UNREACHABLE.md](docs/UNREACHABLE.md) | What cannot be verified here, and exactly why |
 | [ENHANCEMENTS.md](docs/ENHANCEMENTS.md) · [FEATURE-INVENTORY.json](docs/FEATURE-INVENTORY.json) | Version history and the machine-checked inventory |
 

@@ -2,12 +2,12 @@
   {
     "name": "video plays and paints",
     "pass": true,
-    "detail": "media-canvas motion over 600ms = 1741018"
+    "detail": "media-canvas motion over 600ms = 1486583"
   },
   {
     "name": "video re-acquisition scans",
     "pass": true,
-    "detail": "6 scans in 4.2s at 900ms interval"
+    "detail": "7 scans in 4.2s at 900ms interval"
   },
   {
     "name": "tracking identities persist on video",
@@ -37,7 +37,7 @@
   {
     "name": "touch tap activates and rescans",
     "pass": true,
-    "detail": "scans 0→3 active=true"
+    "detail": "scans 1→4 active=true"
   },
   {
     "name": "mirror flips the media",

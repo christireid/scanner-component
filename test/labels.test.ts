@@ -97,5 +97,5 @@ test("the shipped default label template contains only real tokens", () => {
         !/\((?:score|id|coords|time|zoom|mode)\)/.test(template),
         "a token must not be written with parentheses instead of braces"
     )
-    assert.equal(rendered, "0.87 (2.50×)")
+    assert.equal(rendered, "TGT 1 · 0.87")
 })

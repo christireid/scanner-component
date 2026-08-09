@@ -5,6 +5,7 @@ import type {
     GridPulseDetectionOptions,
     GridPulseEffectOptions,
     GridPulseGridOptions,
+    GridPulseHudOptions,
     GridPulseInteractionOptions,
     GridPulseLabelOptions,
     GridPulseMediaOptions,
@@ -66,6 +67,9 @@ export const DEFAULT_DETECTION: GridPulseDetectionOptions = {
 
 export const DEFAULT_GRID: GridPulseGridOptions = {
     visible: true,
+    // Registration crosses, not ruled lines: the default backdrop reads as an
+    // instrument calibration field. `lines` remains one option away.
+    style: "crosses",
     animate: true,
     animation: "hybrid",
     speed: 1,
@@ -77,7 +81,8 @@ export const DEFAULT_GRID: GridPulseGridOptions = {
     scanDirection: "diagonal",
     spacing: 150,
     color: "#ffffff",
-    opacity: 0.17,
+    // Crosses cover far fewer pixels than lines, so they carry more opacity.
+    opacity: 0.4,
     lineWidth: 1,
     dash: [3, 6],
     subdivisions: 2,
@@ -173,7 +178,7 @@ export const DEFAULT_BOXES: GridPulseBoxOptions = {
 
 export const DEFAULT_LABELS: GridPulseLabelOptions = {
     visible: true,
-    template: "{score} ({zoom})",
+    template: "TGT {index} · {score}",
     scorePrecision: 2,
     coordinateStyle: "inherit",
     timeFormat: "clock",
@@ -181,7 +186,7 @@ export const DEFAULT_LABELS: GridPulseLabelOptions = {
     color: "#ffffff",
     background: "rgba(0,0,0,.54)",
     borderColor: "rgba(255,255,255,.36)",
-    borderWidth: 0,
+    borderWidth: 1,
     font: "9px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
     paddingX: 5,
     paddingY: 3,
@@ -189,6 +194,28 @@ export const DEFAULT_LABELS: GridPulseLabelOptions = {
     offsetY: 5,
     uppercase: true,
     letterSpacing: 0.085,
+}
+
+export const DEFAULT_HUD: GridPulseHudOptions = {
+    visible: true,
+    color: "#ffffff",
+    opacity: 0.85,
+    frameBrackets: true,
+    frameInset: 10,
+    frameLength: 26,
+    frameWidth: 1.5,
+    edgeTicks: true,
+    edgeTickSpacing: 40,
+    edgeTickLength: 5,
+    readout: true,
+    readoutPrimary: "SCAN {mode} · TGT {n}",
+    readoutSecondary: "{w}×{h} · {fps} FPS",
+    statusDot: true,
+    font: "10px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    letterSpacing: 0.14,
+    sweep: true,
+    sweepDuration: 900,
+    sweepOpacity: 0.55,
 }
 
 export const DEFAULT_EFFECT: GridPulseEffectOptions = {
@@ -312,6 +339,7 @@ export const GRID_PULSE_SCAN_DEFAULTS = {
     crosshair: DEFAULT_CROSSHAIR,
     boxes: DEFAULT_BOXES,
     labels: DEFAULT_LABELS,
+    hud: DEFAULT_HUD,
     effect: DEFAULT_EFFECT,
     interaction: DEFAULT_INTERACTION,
     motion: DEFAULT_MOTION,

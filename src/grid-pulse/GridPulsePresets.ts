@@ -5,6 +5,7 @@ import type {
     GridPulseDetectionOptions,
     GridPulseEffectOptions,
     GridPulseGridOptions,
+    GridPulseHudOptions,
     GridPulseInteractionOptions,
     GridPulseLabelOptions,
     GridPulseMotionOptions,
@@ -49,6 +50,7 @@ export interface GridPulsePresetBundle {
     crosshair?: Partial<GridPulseCrosshairOptions>
     boxes?: Partial<GridPulseBoxOptions>
     labels?: Partial<GridPulseLabelOptions>
+    hud?: Partial<GridPulseHudOptions>
     effect?: Partial<GridPulseEffectOptions>
     interaction?: Partial<GridPulseInteractionOptions>
     motion?: Partial<GridPulseMotionOptions>
@@ -64,6 +66,7 @@ const BUNDLES: Record<GridPulseScanPreset, GridPulsePresetBundle> = {
         grid: { visible: false },
         crosshair: { visible: false },
         labels: { template: "{zoom} {id}" },
+        hud: { visible: false },
     },
     /** Data-forward: every chip streams coordinates, clock, and frame rate. */
     telemetry: {
@@ -74,7 +77,7 @@ const BUNDLES: Record<GridPulseScanPreset, GridPulsePresetBundle> = {
         },
         crosshair: { visible: true, showCoordinates: true, coordinateStyle: "pixels" },
         connections: { topology: "both", pointTopology: "hub" },
-        grid: { animation: "dash", spacing: 120 },
+        grid: { style: "lines", animation: "dash", spacing: 120 },
         boxes: { width: 96, height: 96, zoom: 2 },
     },
     /** An annotation plate: numbered, captioned regions, no motion flourish. */
@@ -96,12 +99,14 @@ const BUNDLES: Record<GridPulseScanPreset, GridPulsePresetBundle> = {
         connections: { topology: "leaders", dash: [], tickMarks: false },
         crosshair: { visible: false },
         motion: { revealDuration: 220, stagger: 40 },
+        hud: { visible: false },
     },
     /** Coordinate survey: strong grid, percent coordinates, chained stations. */
     survey: {
         detection: { pointCount: 8, minDistance: 0.14 },
         grid: {
             visible: true,
+            style: "lines",
             animation: "scan",
             spacing: 72,
             opacity: 0.3,
@@ -124,9 +129,10 @@ const BUNDLES: Record<GridPulseScanPreset, GridPulsePresetBundle> = {
             pointSize: 9,
         },
         boxes: { visible: false },
-        grid: { visible: true, opacity: 0.12, animation: "drift", spacing: 120 },
+        grid: { visible: true, style: "lines", opacity: 0.12, animation: "drift", spacing: 120 },
         crosshair: { visible: false },
         labels: { visible: false },
+        hud: { visible: false },
     },
     /**
      * Structural tracing. The plan's original used marching-squares contours;
@@ -145,13 +151,14 @@ const BUNDLES: Record<GridPulseScanPreset, GridPulsePresetBundle> = {
         detection: { mode: "detail", pointCount: 6 },
         grid: { visible: false },
         boxes: { visible: false },
-        connections: { topology: "points", pointTopology: "chain" },
+        connections: { topology: "points", pointTopology: "chain", lineWidth: 1.5, dash: [7, 4] },
         labels: { template: "{score}" },
+        hud: { visible: false },
     },
     /** The thinnest possible chrome: quiet lines, tiny type, no ornament. */
     hairline: {
         detection: { seed: 6673 },
-        grid: { opacity: 0.06, lineWidth: 1, dash: [], animation: "pulse", pulseStrength: 0.08 },
+        grid: { style: "lines", opacity: 0.06, lineWidth: 1, dash: [], animation: "pulse", pulseStrength: 0.08 },
         connections: { lineWidth: 1, dash: [], tickMarks: false, pointSize: 4, pulse: false },
         boxes: {
             borderWidth: 1,
@@ -162,6 +169,7 @@ const BUNDLES: Record<GridPulseScanPreset, GridPulsePresetBundle> = {
         },
         labels: { template: "{id}", font: "8px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" },
         crosshair: { lineWidth: 1, radius: 16, opacity: 0.3 },
+        hud: { visible: false },
     },
     /** Density mode: a responsive field of many small detections. */
     swarm: {
@@ -178,12 +186,14 @@ const BUNDLES: Record<GridPulseScanPreset, GridPulsePresetBundle> = {
         motion: { stagger: 24, revealDuration: 260 },
         grid: { visible: false },
         crosshair: { visible: false },
+        hud: { visible: false },
     },
     /** Ambient, always-on: the frame breathes even when nobody hovers. */
     field: {
         interaction: { activation: "always" },
         detection: { seed: 2857, pointCount: 4 },
         grid: {
+            style: "lines",
             animation: "hybrid",
             spacing: 260,
             driftX: 14,
@@ -213,7 +223,7 @@ const BUNDLES: Record<GridPulseScanPreset, GridPulsePresetBundle> = {
             coordinateStyle: "pixels",
         },
         labels: { template: "REC {time} · {fps}FPS", timeFormat: "timecode" },
-        grid: { spacing: 200, opacity: 0.1, subdivisions: 1, animation: "dash" },
+        grid: { style: "lines", spacing: 200, opacity: 0.1, subdivisions: 1, animation: "dash" },
         connections: { topology: "leaders", tickMarks: false },
         detection: { pointCount: 3 },
     },

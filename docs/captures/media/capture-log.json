@@ -5,8 +5,8 @@
     "note": "high contrast on black",
     "scenario": "default",
     "ready": true,
-    "readyMs": 362,
-    "rafPerSecond": 62,
+    "readyMs": 646,
+    "rafPerSecond": 46,
     "errors": []
   },
   {
@@ -15,8 +15,8 @@
     "note": "high contrast on black",
     "scenario": "detail",
     "ready": true,
-    "readyMs": 492,
-    "rafPerSecond": 61,
+    "readyMs": 590,
+    "rafPerSecond": 49,
     "errors": []
   },
   {
@@ -25,8 +25,8 @@
     "note": "high contrast on black",
     "scenario": "person",
     "ready": true,
-    "readyMs": 478,
-    "rafPerSecond": 62,
+    "readyMs": 604,
+    "rafPerSecond": 50,
     "errors": []
   },
   {
@@ -35,8 +35,8 @@
     "note": "high contrast on black",
     "scenario": "adaptive",
     "ready": true,
-    "readyMs": 481,
-    "rafPerSecond": 61,
+    "readyMs": 263,
+    "rafPerSecond": 48,
     "errors": []
   },
   {
@@ -45,8 +45,8 @@
     "note": "high contrast on black",
     "scenario": "xray",
     "ready": true,
-    "readyMs": 518,
-    "rafPerSecond": 61,
+    "readyMs": 659,
+    "rafPerSecond": 47,
     "errors": []
   },
   {
@@ -55,8 +55,8 @@
     "note": "high contrast on black",
     "scenario": "thermal",
     "ready": true,
-    "readyMs": 650,
-    "rafPerSecond": 61,
+    "readyMs": 881,
+    "rafPerSecond": 46,
     "errors": []
   },
   {
@@ -65,8 +65,8 @@
     "note": "high contrast on black",
     "scenario": "diffusion",
     "ready": true,
-    "readyMs": 312,
-    "rafPerSecond": 61,
+    "readyMs": 811,
+    "rafPerSecond": 46,
     "errors": []
   },
   {
@@ -75,7 +75,7 @@
     "note": "high contrast on black",
     "scenario": "swarm",
     "ready": true,
-    "readyMs": 471,
+    "readyMs": 570,
     "rafPerSecond": 61,
     "errors": []
   },
@@ -85,8 +85,8 @@
     "note": "high contrast on black",
     "scenario": "tracking",
     "ready": true,
-    "readyMs": 466,
-    "rafPerSecond": 57,
+    "readyMs": 658,
+    "rafPerSecond": 32,
     "errors": []
   },
   {
@@ -95,8 +95,8 @@
     "note": "high contrast on black",
     "scenario": "specimen",
     "ready": true,
-    "readyMs": 740,
-    "rafPerSecond": 6,
+    "readyMs": 513,
+    "rafPerSecond": 33,
     "errors": []
   },
   {
@@ -105,8 +105,8 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "default",
     "ready": true,
-    "readyMs": 504,
-    "rafPerSecond": 61,
+    "readyMs": 641,
+    "rafPerSecond": 48,
     "errors": []
   },
   {
@@ -115,8 +115,8 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "detail",
     "ready": true,
-    "readyMs": 227,
-    "rafPerSecond": 59,
+    "readyMs": 290,
+    "rafPerSecond": 45,
     "errors": []
   },
   {
@@ -125,8 +125,8 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "person",
     "ready": true,
-    "readyMs": 465,
-    "rafPerSecond": 61,
+    "readyMs": 629,
+    "rafPerSecond": 45,
     "errors": []
   },
   {
@@ -135,8 +135,8 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "adaptive",
     "ready": true,
-    "readyMs": 503,
-    "rafPerSecond": 61,
+    "readyMs": 659,
+    "rafPerSecond": 44,
     "errors": []
   },
   {
@@ -145,8 +145,8 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "xray",
     "ready": true,
-    "readyMs": 225,
-    "rafPerSecond": 61,
+    "readyMs": 725,
+    "rafPerSecond": 47,
     "errors": []
   },
   {
@@ -155,8 +155,8 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "thermal",
     "ready": true,
-    "readyMs": 239,
-    "rafPerSecond": 62,
+    "readyMs": 796,
+    "rafPerSecond": 44,
     "errors": []
   },
   {
@@ -165,8 +165,8 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "diffusion",
     "ready": true,
-    "readyMs": 569,
-    "rafPerSecond": 62,
+    "readyMs": 821,
+    "rafPerSecond": 50,
     "errors": []
   },
   {
@@ -175,7 +175,7 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "swarm",
     "ready": true,
-    "readyMs": 210,
+    "readyMs": 607,
     "rafPerSecond": 61,
     "errors": []
   },
@@ -185,8 +185,8 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "tracking",
     "ready": true,
-    "readyMs": 490,
-    "rafPerSecond": 57,
+    "readyMs": 553,
+    "rafPerSecond": 32,
     "errors": []
   },
   {
@@ -195,8 +195,8 @@
     "note": "translucent structures on white — chrome-contrast worst case",
     "scenario": "specimen",
     "ready": true,
-    "readyMs": 725,
-    "rafPerSecond": 7,
+    "readyMs": 402,
+    "rafPerSecond": 27,
     "errors": []
   },
   {
@@ -205,8 +205,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "default",
     "ready": true,
-    "readyMs": 766,
-    "rafPerSecond": 61,
+    "readyMs": 1103,
+    "rafPerSecond": 46,
     "errors": []
   },
   {
@@ -215,8 +215,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "detail",
     "ready": true,
-    "readyMs": 774,
-    "rafPerSecond": 60,
+    "readyMs": 857,
+    "rafPerSecond": 43,
     "errors": []
   },
   {
@@ -225,8 +225,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "person",
     "ready": true,
-    "readyMs": 708,
-    "rafPerSecond": 62,
+    "readyMs": 1009,
+    "rafPerSecond": 48,
     "errors": []
   },
   {
@@ -235,8 +235,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "adaptive",
     "ready": true,
-    "readyMs": 697,
-    "rafPerSecond": 38,
+    "readyMs": 869,
+    "rafPerSecond": 46,
     "errors": []
   },
   {
@@ -245,8 +245,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "xray",
     "ready": true,
-    "readyMs": 879,
-    "rafPerSecond": 61,
+    "readyMs": 896,
+    "rafPerSecond": 46,
     "errors": []
   },
   {
@@ -255,8 +255,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "thermal",
     "ready": true,
-    "readyMs": 840,
-    "rafPerSecond": 61,
+    "readyMs": 1157,
+    "rafPerSecond": 46,
     "errors": []
   },
   {
@@ -265,8 +265,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "diffusion",
     "ready": true,
-    "readyMs": 784,
-    "rafPerSecond": 62,
+    "readyMs": 998,
+    "rafPerSecond": 46,
     "errors": []
   },
   {
@@ -275,8 +275,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "swarm",
     "ready": true,
-    "readyMs": 329,
-    "rafPerSecond": 61,
+    "readyMs": 940,
+    "rafPerSecond": 62,
     "errors": []
   },
   {
@@ -285,8 +285,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "tracking",
     "ready": true,
-    "readyMs": 699,
-    "rafPerSecond": 50,
+    "readyMs": 806,
+    "rafPerSecond": 31,
     "errors": []
   },
   {
@@ -295,8 +295,8 @@
     "note": "warm magenta/orange — skin-adjacent tones, portrait aspect",
     "scenario": "specimen",
     "ready": true,
-    "readyMs": 1089,
-    "rafPerSecond": 6,
+    "readyMs": 433,
+    "rafPerSecond": 28,
     "errors": []
   },
   {
@@ -305,8 +305,8 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "default",
     "ready": true,
-    "readyMs": 218,
-    "rafPerSecond": 61,
+    "readyMs": 787,
+    "rafPerSecond": 49,
     "errors": []
   },
   {
@@ -315,8 +315,8 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "detail",
     "ready": true,
-    "readyMs": 666,
-    "rafPerSecond": 62,
+    "readyMs": 788,
+    "rafPerSecond": 47,
     "errors": []
   },
   {
@@ -325,8 +325,8 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "person",
     "ready": true,
-    "readyMs": 216,
-    "rafPerSecond": 61,
+    "readyMs": 404,
+    "rafPerSecond": 47,
     "errors": []
   },
   {
@@ -335,8 +335,8 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "adaptive",
     "ready": true,
-    "readyMs": 222,
-    "rafPerSecond": 60,
+    "readyMs": 1044,
+    "rafPerSecond": 48,
     "errors": []
   },
   {
@@ -345,8 +345,8 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "xray",
     "ready": true,
-    "readyMs": 301,
-    "rafPerSecond": 61,
+    "readyMs": 837,
+    "rafPerSecond": 49,
     "errors": []
   },
   {
@@ -355,8 +355,8 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "thermal",
     "ready": true,
-    "readyMs": 225,
-    "rafPerSecond": 32,
+    "readyMs": 1004,
+    "rafPerSecond": 50,
     "errors": []
   },
   {
@@ -365,8 +365,8 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "diffusion",
     "ready": true,
-    "readyMs": 3084,
-    "rafPerSecond": 61,
+    "readyMs": 873,
+    "rafPerSecond": 51,
     "errors": []
   },
   {
@@ -375,7 +375,7 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "swarm",
     "ready": true,
-    "readyMs": 823,
+    "readyMs": 749,
     "rafPerSecond": 61,
     "errors": []
   },
@@ -385,8 +385,8 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "tracking",
     "ready": true,
-    "readyMs": 691,
-    "rafPerSecond": 55,
+    "readyMs": 809,
+    "rafPerSecond": 33,
     "errors": []
   },
   {
@@ -395,8 +395,8 @@
     "note": "soft low-contrast blur, 6016px source",
     "scenario": "specimen",
     "ready": true,
-    "readyMs": 1217,
-    "rafPerSecond": 6,
+    "readyMs": 418,
+    "rafPerSecond": 28,
     "errors": []
   }
 ]

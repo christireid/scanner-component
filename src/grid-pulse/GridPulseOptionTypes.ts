@@ -137,8 +137,16 @@ export interface GridPulseDetectionOptions {
     mobilePointLimit: number
 }
 
+export type GridPulseGridStyle = "lines" | "crosses"
+
 export interface GridPulseGridOptions {
     visible: boolean
+    /**
+     * `lines` is the continuous ruled grid; `crosses` replaces every major
+     * intersection with a `+` registration mark and every subdivision with a
+     * survey dot — the tactical-HUD backdrop.
+     */
+    style: GridPulseGridStyle
     animate: boolean
     /** Animation system. `dash` preserves the pre-v2.15 behavior. */
     animation: GridPulseGridAnimation
@@ -443,6 +451,40 @@ export interface GridPulseThemeOptions {
     chromeAdaptiveGlow: boolean
 }
 
+export interface GridPulseHudOptions {
+    /** Master switch for the instrument frame drawn over the whole stage. */
+    visible: boolean
+    /** Chrome color; adaptive chrome overrides it like every other layer. */
+    color: string
+    opacity: number
+    /** Corner brackets framing the viewport itself. */
+    frameBrackets: boolean
+    /** Inset, in CSS pixels, from the stage edge to the frame. */
+    frameInset: number
+    /** Arm length of each viewport corner bracket. */
+    frameLength: number
+    frameWidth: number
+    /** Ruler tick marks along all four stage edges. */
+    edgeTicks: boolean
+    edgeTickSpacing: number
+    edgeTickLength: number
+    /** Live status readouts pinned inside the frame corners. */
+    readout: boolean
+    /** Top-left template. Tokens: {mode} {n} {fps} {w} {h}. */
+    readoutPrimary: string
+    /** Bottom-right template. Same tokens. */
+    readoutSecondary: string
+    /** Pulsing acquisition dot ahead of the primary readout. */
+    statusDot: boolean
+    font: string
+    /** Tracking in em applied to readout text. */
+    letterSpacing: number
+    /** Full-stage acquisition sweep line on every scan commit. */
+    sweep: boolean
+    sweepDuration: number
+    sweepOpacity: number
+}
+
 export interface GridPulseRenderingOptions {
     /** Maximum overlay animation rate. */
     maxFps: number
@@ -525,6 +567,7 @@ export interface GridPulseScanProps {
     crosshair?: Partial<GridPulseCrosshairOptions>
     boxes?: Partial<GridPulseBoxOptions>
     labels?: Partial<GridPulseLabelOptions>
+    hud?: Partial<GridPulseHudOptions>
     effect?: Partial<GridPulseEffectOptions>
     interaction?: Partial<GridPulseInteractionOptions>
     motion?: Partial<GridPulseMotionOptions>

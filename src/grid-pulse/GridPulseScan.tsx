@@ -64,6 +64,7 @@ import type {
     GridPulseFramePoint,
     GridPulseFrameSnapshot,
     GridPulseGridOptions,
+    GridPulseHudOptions,
     GridPulseLabelOptions,
     GridPulseMediaOptions,
     GridPulseMediaType,
@@ -80,6 +81,7 @@ import {
     DEFAULT_DETECTION,
     DEFAULT_EFFECT,
     DEFAULT_GRID,
+    DEFAULT_HUD,
     DEFAULT_INTERACTION,
     DEFAULT_LABELS,
     DEFAULT_MEDIA,
@@ -885,7 +887,49 @@ const drawGrid = (
             ctx.stroke()
         }
     }
+    // Registration-cross field: a `+` at every major intersection, a survey
+    // dot at every subdivision intersection that a major does not cover.
+    const drawCrosses = (subdivision = false) => {
+        const divisions = Math.max(1, options.subdivisions)
+        const step = subdivision ? spacing / divisions : spacing
+        const offsetX = frame.offsetX % step
+        const offsetY = frame.offsetY % step
+        const arm = Math.min(8, Math.max(3, spacing * 0.05))
+        ctx.setLineDash([])
+        ctx.beginPath()
+        let columnIndex = 0
+        for (let x = -step + offsetX; x < width + step; x += step, columnIndex += 1) {
+            let rowIndex = 0
+            for (let y = -step + offsetY; y < height + step; y += step, rowIndex += 1) {
+                const onMajor =
+                    columnIndex % divisions === 0 && rowIndex % divisions === 0
+                if (subdivision && onMajor) continue
+                const px = Math.round(x) + 0.5
+                const py = Math.round(y) + 0.5
+                if (subdivision) {
+                    ctx.moveTo(px - 1, py)
+                    ctx.lineTo(px + 1, py)
+                } else {
+                    ctx.moveTo(px - arm, py)
+                    ctx.lineTo(px + arm, py)
+                    ctx.moveTo(px, py - arm)
+                    ctx.lineTo(px, py + arm)
+                }
+            }
+        }
+        ctx.stroke()
+    }
     const drawCompleteGrid = () => {
+        if (options.style === "crosses") {
+            drawCrosses(false)
+            if (options.subdivisions > 1) {
+                const previousAlpha = ctx.globalAlpha
+                ctx.globalAlpha *= 0.52
+                drawCrosses(true)
+                ctx.globalAlpha = previousAlpha
+            }
+            return
+        }
         ctx.setLineDash(options.dash)
         ctx.lineDashOffset = frame.dashOffset
         drawLines(false)
@@ -1031,6 +1075,65 @@ const drawGridWithChromeZones = (
             ctx.stroke()
         }
     }
+    // Zone-aware registration crosses: each intersection is stroked in the
+    // chrome color of the zone it lands in.
+    const drawCrossesZones = (subdivision: boolean, haloPass: boolean) => {
+        const divisions = Math.max(1, options.subdivisions)
+        const step = subdivision ? spacing / divisions : spacing
+        const offsetX = frame.offsetX % step
+        const offsetY = frame.offsetY % step
+        const arm = Math.min(8, Math.max(3, spacing * 0.05))
+        ctx.setLineDash([])
+        let columnIndex = 0
+        for (let x = -step + offsetX; x < width + step; x += step, columnIndex += 1) {
+            let rowIndex = 0
+            for (let y = -step + offsetY; y < height + step; y += step, rowIndex += 1) {
+                const onMajor =
+                    columnIndex % divisions === 0 && rowIndex % divisions === 0
+                if (subdivision && onMajor) continue
+                const zoneColumn = Math.max(0, Math.min(columns - 1, Math.floor((x / Math.max(1, width)) * columns)))
+                const zoneRow = Math.max(0, Math.min(rows - 1, Math.floor((y / Math.max(1, height)) * rows)))
+                ctx.strokeStyle = haloPass && halo
+                    ? oppositeChromeColor(zoneChromeKind(palette, zoneColumn, zoneRow), halo)
+                    : zoneChromeColor(palette, zoneColumn, zoneRow, options.color)
+                const px = Math.round(x) + 0.5
+                const py = Math.round(y) + 0.5
+                ctx.beginPath()
+                if (subdivision) {
+                    ctx.moveTo(px - 1, py)
+                    ctx.lineTo(px + 1, py)
+                } else {
+                    ctx.moveTo(px - arm, py)
+                    ctx.lineTo(px + arm, py)
+                    ctx.moveTo(px, py - arm)
+                    ctx.lineTo(px, py + arm)
+                }
+                ctx.stroke()
+            }
+        }
+    }
+    const drawStyledPass = (haloPass: boolean) => {
+        if (options.style === "crosses") {
+            drawCrossesZones(false, haloPass)
+            if (options.subdivisions > 1) {
+                const previousAlpha = ctx.globalAlpha
+                ctx.globalAlpha *= 0.52
+                drawCrossesZones(true, haloPass)
+                ctx.globalAlpha = previousAlpha
+            }
+            return
+        }
+        ctx.setLineDash(options.dash)
+        ctx.lineDashOffset = frame.dashOffset
+        drawLines(spacing, false, haloPass)
+        if (options.subdivisions > 1) {
+            const previousAlpha = ctx.globalAlpha
+            ctx.globalAlpha *= 0.52
+            ctx.setLineDash([1, Math.max(8, spacing / 3)])
+            drawLines(spacing / options.subdivisions, true, haloPass)
+            ctx.globalAlpha = previousAlpha
+        }
+    }
     const drawPass = (haloPass: boolean) => {
         ctx.save()
         ctx.globalAlpha = haloPass && halo
@@ -1039,22 +1142,10 @@ const drawGridWithChromeZones = (
         ctx.lineWidth = haloPass && halo
             ? options.lineWidth + Math.max(0, halo.width) * 2
             : options.lineWidth
-        ctx.setLineDash(options.dash)
-        ctx.lineDashOffset = frame.dashOffset
-        drawLines(spacing, false, haloPass)
-        if (options.subdivisions > 1) {
-            ctx.globalAlpha *= 0.52
-            ctx.setLineDash([1, Math.max(8, spacing / 3)])
-            drawLines(spacing / options.subdivisions, true, haloPass)
-        }
+        drawStyledPass(haloPass)
         if (!haloPass) {
             drawGridEnergyBand(ctx, width, height, frame, () => {
-                ctx.setLineDash(options.dash)
-                drawLines(spacing, false, false)
-                if (options.subdivisions > 1) {
-                    ctx.setLineDash([1, Math.max(8, spacing / 3)])
-                    drawLines(spacing / options.subdivisions, true, false)
-                }
+                drawStyledPass(false)
             })
         }
         ctx.restore()
@@ -1263,6 +1354,212 @@ const drawCrosshairWithChromeZones = (
     )
 }
 
+const hudColorWithAlpha = (color: string, alphaValue: number) => {
+    if (color.startsWith("#")) {
+        const hex = color.slice(1)
+        const size = hex.length >= 6 ? 2 : 1
+        const channel = (index: number) => {
+            const part = hex.slice(index * size, index * size + size)
+            const value = parseInt(size === 1 ? part + part : part, 16)
+            return Number.isNaN(value) ? 255 : value
+        }
+        return `rgba(${channel(0)},${channel(1)},${channel(2)},${clamp(alphaValue, 0, 1)})`
+    }
+    return color
+}
+
+const formatHudReadout = (
+    template: string,
+    mode: string,
+    count: number,
+    fps: number,
+    width: number,
+    height: number
+) =>
+    template
+        .replace(/\{mode\}/g, mode.toUpperCase())
+        .replace(/\{n\}/g, String(count).padStart(2, "0"))
+        .replace(/\{fps\}/g, String(Math.max(0, Math.round(fps))))
+        .replace(/\{w\}/g, String(Math.round(width)))
+        .replace(/\{h\}/g, String(Math.round(height)))
+
+/**
+ * Full-stage acquisition sweep: a bright scan line with a soft trail crosses
+ * the media once per scan commit, top to bottom.
+ */
+const drawHudSweep = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+    options: GridPulseHudOptions,
+    alpha: number,
+    progress: number,
+    color: string
+) => {
+    if (progress <= 0 || progress >= 1 || alpha <= 0) return
+    const eased = 1 - Math.pow(1 - progress, 2)
+    const y = eased * height
+    const fade = progress > 0.82 ? (1 - progress) / 0.18 : 1
+    const strength = clamp(options.sweepOpacity * alpha * fade, 0, 1)
+    if (strength <= 0) return
+    ctx.save()
+    const trail = Math.min(120, height * 0.24)
+    const gradient = ctx.createLinearGradient(0, y - trail, 0, y)
+    gradient.addColorStop(0, hudColorWithAlpha(color, 0))
+    gradient.addColorStop(1, hudColorWithAlpha(color, strength * 0.3))
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, Math.max(0, y - trail), width, Math.min(trail, y))
+    // Dark keel line under the bright core so the sweep survives bright media.
+    ctx.fillStyle = `rgba(0,0,0,${(strength * 0.5).toFixed(3)})`
+    ctx.fillRect(0, y + 0.75, width, 1)
+    ctx.fillStyle = hudColorWithAlpha(color, strength)
+    ctx.fillRect(0, y - 0.75, width, 1.5)
+    ctx.restore()
+}
+
+/**
+ * The instrument frame: viewport corner brackets, edge ruler ticks, and live
+ * status readouts. Drawn above every other overlay layer — it is the glass
+ * the scanner is looking through.
+ */
+const drawHud = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+    options: GridPulseHudOptions,
+    alpha: number,
+    now: number,
+    reducedMotion: boolean,
+    colorAt: (nx: number, ny: number) => string,
+    halo: { color: string; opacity: number } | null,
+    readoutData: { mode: string; count: number; fps: number }
+) => {
+    if (!options.visible || alpha <= 0) return
+    const inset = Math.max(2, options.frameInset)
+    ctx.save()
+    ctx.globalAlpha = clamp(options.opacity * alpha, 0, 1)
+    ctx.setLineDash([])
+
+    if (options.frameBrackets) {
+        const arm = Math.max(6, options.frameLength)
+        ctx.lineWidth = Math.max(0.5, options.frameWidth)
+        ctx.lineCap = "square"
+        const corners: Array<[number, number, number, number]> = [
+            // x, y, horizontal direction, vertical direction
+            [inset, inset, 1, 1],
+            [width - inset, inset, -1, 1],
+            [inset, height - inset, 1, -1],
+            [width - inset, height - inset, -1, -1],
+        ]
+        for (const [cx, cy, dx, dy] of corners) {
+            ctx.strokeStyle = colorAt(cx / Math.max(1, width), cy / Math.max(1, height))
+            ctx.beginPath()
+            ctx.moveTo(cx + arm * dx, cy)
+            ctx.lineTo(cx, cy)
+            ctx.lineTo(cx, cy + arm * dy)
+            ctx.stroke()
+        }
+    }
+
+    if (options.edgeTicks) {
+        const spacing = Math.max(12, options.edgeTickSpacing)
+        const tick = Math.max(2, options.edgeTickLength)
+        const clear = inset + Math.max(6, options.frameLength) + 8
+        ctx.lineWidth = 1
+        const previousAlpha = ctx.globalAlpha
+        ctx.globalAlpha = previousAlpha * 0.66
+        for (let x = spacing; x < width - spacing / 2; x += spacing) {
+            if (x < clear || x > width - clear) continue
+            const px = Math.round(x) + 0.5
+            ctx.strokeStyle = colorAt(x / Math.max(1, width), 0)
+            ctx.beginPath()
+            ctx.moveTo(px, inset)
+            ctx.lineTo(px, inset + tick)
+            ctx.stroke()
+            ctx.strokeStyle = colorAt(x / Math.max(1, width), 1)
+            ctx.beginPath()
+            ctx.moveTo(px, height - inset)
+            ctx.lineTo(px, height - inset - tick)
+            ctx.stroke()
+        }
+        for (let y = spacing; y < height - spacing / 2; y += spacing) {
+            if (y < clear || y > height - clear) continue
+            const py = Math.round(y) + 0.5
+            ctx.strokeStyle = colorAt(0, y / Math.max(1, height))
+            ctx.beginPath()
+            ctx.moveTo(inset, py)
+            ctx.lineTo(inset + tick, py)
+            ctx.stroke()
+            ctx.strokeStyle = colorAt(1, y / Math.max(1, height))
+            ctx.beginPath()
+            ctx.moveTo(width - inset, py)
+            ctx.lineTo(width - inset - tick, py)
+            ctx.stroke()
+        }
+        ctx.globalAlpha = previousAlpha
+    }
+
+    if (options.readout) {
+        ctx.font = options.font
+        if ("letterSpacing" in ctx) {
+            ctx.letterSpacing = `${Math.max(0, options.letterSpacing)}em`
+        }
+        const drawReadoutText = (
+            text: string,
+            x: number,
+            y: number,
+            align: CanvasTextAlign,
+            baseline: CanvasTextBaseline,
+            color: string
+        ) => {
+            ctx.textAlign = align
+            ctx.textBaseline = baseline
+            if (halo && halo.opacity > 0) {
+                const previousAlpha = ctx.globalAlpha
+                ctx.globalAlpha = clamp(halo.opacity * alpha, 0, 1)
+                ctx.strokeStyle = halo.color
+                ctx.lineWidth = 2
+                ctx.lineJoin = "round"
+                ctx.strokeText(text, x, y)
+                ctx.globalAlpha = previousAlpha
+            }
+            ctx.fillStyle = color
+            ctx.fillText(text, x, y)
+        }
+        const primary = formatHudReadout(
+            options.readoutPrimary, readoutData.mode, readoutData.count,
+            readoutData.fps, width, height
+        )
+        const secondary = formatHudReadout(
+            options.readoutSecondary, readoutData.mode, readoutData.count,
+            readoutData.fps, width, height
+        )
+        const topColor = colorAt(0, 0)
+        let textX = inset + 6
+        if (options.statusDot) {
+            const blink = reducedMotion
+                ? 1
+                : 0.42 + 0.58 * (0.5 + 0.5 * Math.sin(now / 260))
+            const previousAlpha = ctx.globalAlpha
+            ctx.globalAlpha = clamp(options.opacity * alpha * blink, 0, 1)
+            ctx.fillStyle = topColor
+            ctx.beginPath()
+            ctx.arc(inset + 9, inset + 10.5, 2.5, 0, Math.PI * 2)
+            ctx.fill()
+            ctx.globalAlpha = previousAlpha
+            textX = inset + 16
+        }
+        if (primary) drawReadoutText(primary, textX, inset + 6, "left", "top", topColor)
+        if (secondary) {
+            drawReadoutText(
+                secondary, width - inset - 6, height - inset - 5,
+                "right", "bottom", colorAt(1, 1)
+            )
+        }
+    }
+    ctx.restore()
+}
+
 const drawPoint = (
     ctx: CanvasRenderingContext2D,
     point: PixelPoint,
@@ -1305,6 +1602,19 @@ const drawPoint = (
         ctx.moveTo(point.px, point.py + edge)
         ctx.lineTo(point.px, point.py + edge + tick)
         ctx.stroke()
+        // Rotating lock ring: two opposing arc segments orbiting the reticle,
+        // the classic "target acquired" idiom. Static under reduced motion.
+        const ringRadius = size * 0.95 + 3
+        const ringAngle = reducedMotion ? Math.PI / 4 : (now / 1400) % (Math.PI * 2)
+        const previousAlpha = ctx.globalAlpha
+        ctx.globalAlpha = clamp(options.opacity * alpha * 0.75, 0, 1)
+        ctx.beginPath()
+        ctx.arc(point.px, point.py, ringRadius, ringAngle, ringAngle + Math.PI * 0.42)
+        ctx.stroke()
+        ctx.beginPath()
+        ctx.arc(point.px, point.py, ringRadius, ringAngle + Math.PI, ringAngle + Math.PI * 1.42)
+        ctx.stroke()
+        ctx.globalAlpha = previousAlpha
     }
     ctx.fillRect(point.px - 1, point.py - 1, 2, 2)
     if (options.pulse && !reducedMotion) {
@@ -1910,6 +2220,7 @@ export default function GridPulseScan({
     crosshair: crosshairOverrides,
     boxes: boxOverrides,
     labels: labelOverrides,
+    hud: hudOverrides,
     effect: effectOverrides,
     interaction: interactionOverrides,
     motion: motionOverrides,
@@ -1934,6 +2245,7 @@ export default function GridPulseScan({
     const crosshair = useStableOptions({ ...DEFAULT_CROSSHAIR, ...presetBundle.crosshair, ...crosshairOverrides })
     const boxes = useStableOptions({ ...DEFAULT_BOXES, ...presetBundle.boxes, ...boxOverrides })
     const labels = useStableOptions({ ...DEFAULT_LABELS, ...presetBundle.labels, ...labelOverrides })
+    const hud = useStableOptions({ ...DEFAULT_HUD, ...presetBundle.hud, ...hudOverrides })
     const effect = useStableOptions({ ...DEFAULT_EFFECT, ...presetBundle.effect, ...effectOverrides })
     const interaction = useStableOptions({ ...DEFAULT_INTERACTION, ...presetBundle.interaction, ...interactionOverrides })
     const motion = useStableOptions({ ...DEFAULT_MOTION, ...presetBundle.motion, ...motionOverrides })
@@ -2911,6 +3223,7 @@ export default function GridPulseScan({
                 (overlayAlpha > 0 &&
                     !reducedMotionRef.current &&
                     (grid.animate || connections.pulse || connections.animation !== "static" || boxes.scanSweep || boxes.animation !== "static" ||
+                    (hud.visible && (hud.sweep || hud.statusDot)) ||
                     revealsAnimating || crosshairAnimating))
             const shouldDrawOverlay = overlayDirtyRef.current || overlayAnimated
 
@@ -3034,6 +3347,20 @@ export default function GridPulseScan({
                         overlayAlpha,
                         now,
                         reducedMotionRef.current
+                    )
+                }
+                if (hud.visible && hud.sweep && !reducedMotionRef.current) {
+                    const sweepProgress =
+                        (frameWallClockMs - scanCommittedAtRef.current) /
+                        Math.max(1, hud.sweepDuration)
+                    drawHudSweep(
+                        overlayCtx,
+                        width,
+                        height,
+                        hud,
+                        overlayAlpha,
+                        sweepProgress,
+                        globalChrome ?? hud.color
                     )
                 }
                 const crossX = crosshairPositionRef.current.x * width
@@ -3231,6 +3558,39 @@ export default function GridPulseScan({
                         )
                     }
                 })
+                if (hud.visible) {
+                    const zoneColumns = Math.max(1, chromePalette.zoneColumns)
+                    const zoneRows = Math.max(1, chromePalette.zoneRows)
+                    const hudColorAt = (nx: number, ny: number) => {
+                        if (useRegionalChrome) {
+                            return zoneChromeColor(
+                                chromePalette,
+                                Math.min(zoneColumns - 1, Math.floor(nx * zoneColumns)),
+                                Math.min(zoneRows - 1, Math.floor(ny * zoneRows)),
+                                hud.color
+                            )
+                        }
+                        return globalChrome ?? hud.color
+                    }
+                    drawHud(
+                        overlayCtx,
+                        width,
+                        height,
+                        hud,
+                        overlayAlpha,
+                        now,
+                        reducedMotionRef.current,
+                        hudColorAt,
+                        adaptiveHalo && globalHaloColor
+                            ? { color: globalHaloColor, opacity: adaptiveHalo.opacity }
+                            : null,
+                        {
+                            mode: detection.mode,
+                            count: points.length,
+                            fps: overlayFpsRef.current,
+                        }
+                    )
+                }
             }
 
             const snapshotPoints = pointsRef.current.map((point): GridPulseFramePoint => ({
@@ -3318,6 +3678,7 @@ export default function GridPulseScan({
         detection.mode,
         effect,
         grid,
+        hud,
         labels,
         media,
         motion,

@@ -1,238 +1,238 @@
 {
   "method": "overlay-canvas alpha channel, 300x200 downsample, mean absolute difference; coverage = share of pixels with alpha > 8",
   "coverage": {
-    "loupe": 7.6,
-    "telemetry": 11.58,
-    "plate": 7.22,
-    "survey": 7.32,
-    "lattice": 3.73,
-    "contour": 1.38,
-    "hairline": 12.4,
-    "swarm": 0.59,
-    "field": 2.95,
-    "viewfinder": 18.11,
-    "tracking": 23.48
+    "loupe": 7.62,
+    "telemetry": 12.06,
+    "plate": 7.27,
+    "survey": 7.59,
+    "lattice": 3.71,
+    "contour": 1.68,
+    "hairline": 12.42,
+    "swarm": 0.68,
+    "field": 3.38,
+    "viewfinder": 18.35,
+    "tracking": 30.4
   },
   "pairs": [
     {
-      "pair": "contour vs field",
-      "meanAbsAlphaDiff": 0.79
-    },
-    {
       "pair": "contour vs swarm",
-      "meanAbsAlphaDiff": 0.97
+      "meanAbsAlphaDiff": 1.26
     },
     {
-      "pair": "swarm vs field",
-      "meanAbsAlphaDiff": 1.53
+      "pair": "contour vs field",
+      "meanAbsAlphaDiff": 1.43
     },
     {
       "pair": "lattice vs swarm",
-      "meanAbsAlphaDiff": 2.02
-    },
-    {
-      "pair": "survey vs contour",
-      "meanAbsAlphaDiff": 2.09
+      "meanAbsAlphaDiff": 1.52
     },
     {
       "pair": "lattice vs contour",
-      "meanAbsAlphaDiff": 2.22
+      "meanAbsAlphaDiff": 1.9
     },
     {
-      "pair": "survey vs swarm",
-      "meanAbsAlphaDiff": 2.51
+      "pair": "swarm vs field",
+      "meanAbsAlphaDiff": 1.96
     },
     {
-      "pair": "survey vs field",
-      "meanAbsAlphaDiff": 2.62
+      "pair": "survey vs contour",
+      "meanAbsAlphaDiff": 2.59
     },
     {
       "pair": "lattice vs field",
-      "meanAbsAlphaDiff": 2.83
+      "meanAbsAlphaDiff": 2.68
+    },
+    {
+      "pair": "survey vs field",
+      "meanAbsAlphaDiff": 2.75
+    },
+    {
+      "pair": "survey vs swarm",
+      "meanAbsAlphaDiff": 2.85
     },
     {
       "pair": "survey vs lattice",
-      "meanAbsAlphaDiff": 3.73
+      "meanAbsAlphaDiff": 3.5
     },
     {
       "pair": "telemetry vs hairline",
-      "meanAbsAlphaDiff": 12.34
+      "meanAbsAlphaDiff": 12.67
     },
     {
       "pair": "plate vs swarm",
-      "meanAbsAlphaDiff": 17.46
+      "meanAbsAlphaDiff": 17.51
     },
     {
       "pair": "plate vs contour",
-      "meanAbsAlphaDiff": 17.7
-    },
-    {
-      "pair": "plate vs field",
-      "meanAbsAlphaDiff": 18.2
-    },
-    {
-      "pair": "loupe vs swarm",
-      "meanAbsAlphaDiff": 18.54
+      "meanAbsAlphaDiff": 17.91
     },
     {
       "pair": "plate vs lattice",
-      "meanAbsAlphaDiff": 18.63
+      "meanAbsAlphaDiff": 18.18
+    },
+    {
+      "pair": "loupe vs swarm",
+      "meanAbsAlphaDiff": 18.56
+    },
+    {
+      "pair": "plate vs field",
+      "meanAbsAlphaDiff": 18.59
     },
     {
       "pair": "loupe vs contour",
-      "meanAbsAlphaDiff": 18.86
-    },
-    {
-      "pair": "plate vs survey",
-      "meanAbsAlphaDiff": 18.97
-    },
-    {
-      "pair": "telemetry vs contour",
-      "meanAbsAlphaDiff": 19.24
-    },
-    {
-      "pair": "loupe vs field",
-      "meanAbsAlphaDiff": 19.29
-    },
-    {
-      "pair": "telemetry vs swarm",
-      "meanAbsAlphaDiff": 19.63
+      "meanAbsAlphaDiff": 19.05
     },
     {
       "pair": "loupe vs lattice",
-      "meanAbsAlphaDiff": 19.68
+      "meanAbsAlphaDiff": 19.25
+    },
+    {
+      "pair": "plate vs survey",
+      "meanAbsAlphaDiff": 19.28
+    },
+    {
+      "pair": "loupe vs field",
+      "meanAbsAlphaDiff": 19.66
+    },
+    {
+      "pair": "telemetry vs contour",
+      "meanAbsAlphaDiff": 19.72
     },
     {
       "pair": "telemetry vs field",
-      "meanAbsAlphaDiff": 19.68
+      "meanAbsAlphaDiff": 19.89
     },
     {
       "pair": "contour vs hairline",
-      "meanAbsAlphaDiff": 19.77
+      "meanAbsAlphaDiff": 19.96
     },
     {
-      "pair": "loupe vs survey",
-      "meanAbsAlphaDiff": 20.13
-    },
-    {
-      "pair": "hairline vs field",
-      "meanAbsAlphaDiff": 20.18
+      "pair": "telemetry vs swarm",
+      "meanAbsAlphaDiff": 20.09
     },
     {
       "pair": "hairline vs swarm",
-      "meanAbsAlphaDiff": 20.19
+      "meanAbsAlphaDiff": 20.21
     },
     {
       "pair": "telemetry vs survey",
-      "meanAbsAlphaDiff": 20.34
+      "meanAbsAlphaDiff": 20.3
+    },
+    {
+      "pair": "loupe vs survey",
+      "meanAbsAlphaDiff": 20.41
+    },
+    {
+      "pair": "hairline vs field",
+      "meanAbsAlphaDiff": 20.57
     },
     {
       "pair": "telemetry vs lattice",
-      "meanAbsAlphaDiff": 20.74
-    },
-    {
-      "pair": "survey vs hairline",
-      "meanAbsAlphaDiff": 20.88
+      "meanAbsAlphaDiff": 20.72
     },
     {
       "pair": "lattice vs hairline",
-      "meanAbsAlphaDiff": 21.3
+      "meanAbsAlphaDiff": 20.87
     },
     {
-      "pair": "viewfinder vs tracking",
-      "meanAbsAlphaDiff": 23.55
+      "pair": "survey vs hairline",
+      "meanAbsAlphaDiff": 21.12
     },
     {
       "pair": "loupe vs hairline",
-      "meanAbsAlphaDiff": 23.9
+      "meanAbsAlphaDiff": 23.91
     },
     {
-      "pair": "loupe vs telemetry",
-      "meanAbsAlphaDiff": 26.28
+      "pair": "viewfinder vs tracking",
+      "meanAbsAlphaDiff": 25.39
     },
     {
       "pair": "plate vs hairline",
-      "meanAbsAlphaDiff": 26.34
+      "meanAbsAlphaDiff": 26.35
+    },
+    {
+      "pair": "loupe vs telemetry",
+      "meanAbsAlphaDiff": 26.67
     },
     {
       "pair": "telemetry vs plate",
-      "meanAbsAlphaDiff": 26.75
+      "meanAbsAlphaDiff": 27.15
     },
     {
       "pair": "loupe vs plate",
-      "meanAbsAlphaDiff": 28.11
+      "meanAbsAlphaDiff": 28.12
     },
     {
       "pair": "plate vs viewfinder",
-      "meanAbsAlphaDiff": 40.17
+      "meanAbsAlphaDiff": 40.44
     },
     {
       "pair": "contour vs viewfinder",
-      "meanAbsAlphaDiff": 41.24
-    },
-    {
-      "pair": "swarm vs viewfinder",
-      "meanAbsAlphaDiff": 41.48
+      "meanAbsAlphaDiff": 41.46
     },
     {
       "pair": "field vs viewfinder",
-      "meanAbsAlphaDiff": 41.62
+      "meanAbsAlphaDiff": 41.66
+    },
+    {
+      "pair": "swarm vs viewfinder",
+      "meanAbsAlphaDiff": 41.77
     },
     {
       "pair": "survey vs viewfinder",
-      "meanAbsAlphaDiff": 42.23
+      "meanAbsAlphaDiff": 42.19
     },
     {
       "pair": "lattice vs viewfinder",
-      "meanAbsAlphaDiff": 42.46
+      "meanAbsAlphaDiff": 42.35
     },
     {
       "pair": "telemetry vs viewfinder",
-      "meanAbsAlphaDiff": 42.61
+      "meanAbsAlphaDiff": 42.62
     },
     {
       "pair": "hairline vs viewfinder",
-      "meanAbsAlphaDiff": 45.21
-    },
-    {
-      "pair": "telemetry vs tracking",
-      "meanAbsAlphaDiff": 49.05
-    },
-    {
-      "pair": "plate vs tracking",
-      "meanAbsAlphaDiff": 49.08
-    },
-    {
-      "pair": "hairline vs tracking",
-      "meanAbsAlphaDiff": 49.29
+      "meanAbsAlphaDiff": 45.4
     },
     {
       "pair": "loupe vs viewfinder",
-      "meanAbsAlphaDiff": 49.89
+      "meanAbsAlphaDiff": 50.16
+    },
+    {
+      "pair": "telemetry vs tracking",
+      "meanAbsAlphaDiff": 50.7
+    },
+    {
+      "pair": "hairline vs tracking",
+      "meanAbsAlphaDiff": 51.12
+    },
+    {
+      "pair": "plate vs tracking",
+      "meanAbsAlphaDiff": 51.25
     },
     {
       "pair": "contour vs tracking",
-      "meanAbsAlphaDiff": 50.13
+      "meanAbsAlphaDiff": 52.24
     },
     {
       "pair": "field vs tracking",
-      "meanAbsAlphaDiff": 50.4
+      "meanAbsAlphaDiff": 52.26
     },
     {
       "pair": "swarm vs tracking",
-      "meanAbsAlphaDiff": 50.53
-    },
-    {
-      "pair": "lattice vs tracking",
-      "meanAbsAlphaDiff": 51.2
+      "meanAbsAlphaDiff": 52.69
     },
     {
       "pair": "survey vs tracking",
-      "meanAbsAlphaDiff": 51.23
+      "meanAbsAlphaDiff": 52.95
+    },
+    {
+      "pair": "lattice vs tracking",
+      "meanAbsAlphaDiff": 53.04
     },
     {
       "pair": "loupe vs tracking",
-      "meanAbsAlphaDiff": 56.86
+      "meanAbsAlphaDiff": 58.43
     }
   ]
 }

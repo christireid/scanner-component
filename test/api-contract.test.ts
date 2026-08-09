@@ -19,6 +19,7 @@ const OPTION_GROUPS = [
     "crosshair",
     "boxes",
     "labels",
+    "hud",
     "effect",
     "interaction",
     "motion",

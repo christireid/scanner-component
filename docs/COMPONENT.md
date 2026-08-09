@@ -57,6 +57,7 @@ import GridPulseScan, {
 | `crosshair` | `Partial<GridPulseCrosshairOptions>` | Follow behaviour, coordinate readout. |
 | `boxes` | `Partial<GridPulseBoxOptions>` | Layout, size, zoom, brackets, sweep, acquisition animation. |
 | `labels` | `Partial<GridPulseLabelOptions>` | Chip template, tokens, typography. |
+| `hud` | `Partial<GridPulseHudOptions>` | Instrument frame: viewport brackets, edge ticks, readouts, acquisition sweep. |
 | `effect` | `Partial<GridPulseEffectOptions>` | Effect type, scope, and per-effect settings. |
 | `interaction` | `Partial<GridPulseInteractionOptions>` | Activation, rescan, touch model, transitions. |
 | `motion` | `Partial<GridPulseMotionOptions>` | Reveal timing, easing, reduced-motion policy. |
@@ -122,6 +123,29 @@ is visible instead of silent.
 | `locale` | locale-dependent, 24-hour |
 | `elapsed` | `+00:00:04.500` |
 | `timecode` | `00:00:04:15` at `timecodeFps` |
+
+## HUD
+
+The instrument frame drawn over the whole stage — on by default, and the
+reason the out-of-the-box look reads as a scanner rather than annotated
+media. All of it participates in adaptive chrome (dark ink on light media).
+
+- **Frame** — corner brackets at `frameInset` with `frameLength` arms, plus
+  ruler ticks every `edgeTickSpacing` px along all four edges.
+- **Readouts** — `readoutPrimary` (top-left, with a pulsing status dot) and
+  `readoutSecondary` (bottom-right). Templates accept `{mode}`, `{n}`,
+  `{fps}`, `{w}`, `{h}`. Defaults: `SCAN {mode} · TGT {n}` and
+  `{w}×{h} · {fps} FPS`.
+- **Acquisition sweep** — a full-stage scan line with a soft trail crosses
+  the media once per scan commit (`sweepDuration`, default 900 ms), with a
+  dark keel line so it survives bright media. Suppressed under reduced
+  motion, like every other flourish.
+- The grid's companion is `grid.style`: `"crosses"` (default) renders `+`
+  registration marks at major intersections and survey dots at subdivisions;
+  `"lines"` restores the ruled grid.
+
+`hud={{ visible: false }}` returns the stage to bare annotated media; the
+loupe, plate, lattice, contour, hairline, and swarm presets do exactly that.
 
 ## Effects
 
